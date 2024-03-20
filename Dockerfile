@@ -22,7 +22,10 @@ RUN apt-get update && apt-get install -y libsecret-1-0
 # Installation des dépendances système pour les packages R
 # Installation des dépendances système pour les packages R
 RUN apt-get update && \
-    apt-get install -y libudunits2-dev libproj-dev libgdal-dev
+    apt-get install -y libudunits2-dev libproj-dev libgdal-dev libgeos-dev libgsl-dev
+# Installation de libgsl
+
+
 
 
 
