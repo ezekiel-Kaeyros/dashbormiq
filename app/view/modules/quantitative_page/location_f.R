@@ -19,8 +19,9 @@ ui <- function(id) {
   cards$card_ui("Location",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "subtitle", names(table(import_data$data$location))[which.max(table(import_data$data$location))]),
-                    p(class = "description", "Most common place "),
+                    h3(class = "description", "Most common place :"),
+                    p(class = "subtitle", names(table(import_data$data$location))[which.max(table(import_data$data$location))]),
+                    
                     # Graph goes here
                     uiOutput(ns("plot_loc"),width="500px", height = 500)
                 )
@@ -61,7 +62,8 @@ server <- function(id) {
                       #marker = list(color = c("#0B5345", "#148F77", "#196F3D", "#52BE80", "#7DCEA0", "#CA6F1E")),
                       # marker = list(color = c("#483D8B", "slateblue","#0077BE", "#5696CC",
                       #                         "#76B7DA",  "#A6DAFF")),
-                      marker =list(color="#85C2FF"),
+                      marker =list(color=c("#0000ff","#8f00ff")),
+                      #marker =list(color="#85C2FF"),
                       #colors = "darkviolet",
                       #colors = c("darkgoldenrod", "#663399", "darkblue", "darkgreen"),
                       text = paste(import_data$data_onreal$pct1, sep = ""), textposition = 'outside',
@@ -114,7 +116,7 @@ server <- function(id) {
                             "<br>Percentage :", pct1),
               # marker = list(colors = c("#5072A7", "#1D428A","#0000ff","#7630ff","#20B2AA"),
               #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              marker = list(colors = c("#85C2FF", "#85C2FF","#85C2FF","#85C2FF","#85C2FF"),
+              marker = list(colors = c("#0000ff","#8f00ff","#85C2FF","#85C2FF","#85C2FF"), #"#85C2FF"
                             line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
         layout(title="",
                xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),

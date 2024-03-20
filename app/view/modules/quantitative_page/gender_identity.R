@@ -20,8 +20,9 @@ ui <- function(id) {
   cards$card_ui("Gender identity",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "subtitle", length(unique(import_data$data$gender))),
-                    p(class = "description", "Different genders"),
+                    h3(class = "description", "Different genders :"),
+                    p(class = "subtitle", length(unique(import_data$data$gender))),
+                    
                     # Graph goes here
                     uiOutput(ns("plot_persongen"))
                 )
@@ -59,10 +60,10 @@ server <- function(id) {
       plotly::plot_ly(import_data$data_gen, x = ~Var1,
                       type = "bar",
                       y = ~percentage,
-                      #marker = list(color = c("#0B5345", "#148F77", "#196F3D", "#52BE80", "#7DCEA0", "#CA6F1E")),
-                      # marker = list(color = c("#483D8B", "slateblue","#0077BE", "#5696CC",
+                      marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
+                                              "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A")),
                       #                         "#76B7DA",  "#A6DAFF")),
-                      marker =list(color="#F8D1A4"),
+                      #marker =list(color="#F8D1A4"),
                       #colors = "darkviolet",
                       #colors = c("darkgoldenrod", "#663399", "darkblue", "darkgreen"),
                       text = paste(import_data$data_gen$pct1, sep = ""), textposition = 'outside',
@@ -99,10 +100,11 @@ server <- function(id) {
               text = ~paste("Gender :", Var1,
                             "<br>Number of persons :", Freq,
                             "<br>Percentage :", pct1),
-              # marker = list(colors = c("#5072A7", "#1D428A","#0000ff","#7630ff","#20B2AA"),
-              #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              marker = list(colors = c("#F8D1A4", "#F8D1A4","#F8D1A4","#F8D1A4","#F8D1A4"),
+              marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
+                                      "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A"),
                             line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
+              # marker = list(colors = c("#F8D1A4", "#F8D1A4","#F8D1A4","#F8D1A4","#F8D1A4"),
+              #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
         layout(title="",
                xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%

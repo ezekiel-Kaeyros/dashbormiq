@@ -1,5 +1,5 @@
 #   mongodb+srv://miq-user:Wy1N4zclOtlnR64d@miq-db.ppexwp3.mongodb.net/miq-db
-Sys.setlocale("LC_ALL","English")
+#Sys.setlocale("LC_ALL","English")
 #Sys.setenv(LANG = "en_US.UTF-8")
 
 box::use(
@@ -187,14 +187,14 @@ labels <- sprintf(
   data1$Province, data1$Value
 ) %>% lapply(htmltools::HTML)
 
-pal=colorFactor(palette=c("#FCD18C", "#CFAACB", "#93C89A"), domain=data1$cat)
-m <- leaflet() %>%
+pal=colorFactor(palette=c("#ffa500","#0000ff","#8f00ff"), domain=data1$cat)
+map <- leaflet() %>%
   addProviderTiles("CartoDB.Positron") # Vous pouvez choisir un autre style de tuile si vous le souhaitez
 
-m <- leaflet(data = data1) %>%
+map <- leaflet(data = data1) %>%
   addProviderTiles("CartoDB.VoyagerLabelsUnder") %>%
   addPolygons(
-    fillColor =  ~colorFactor(palette=c("#FCD18C", "#CFAACB", "#93C89A"), domain=data1$cat)(data1$cat),
+    fillColor =  ~colorFactor(palette=c("#ffa500","#0000ff","#8f00ff"), domain=data1$cat)(data1$cat), #"#FCD18C", "#CFAACB", "#93C89A"
     weight = 2,
     opacity = 1,
     color = "white",
@@ -519,7 +519,26 @@ df <- df %>% dplyr::select(person_affected, gender, age, time_incident,report_da
                     another_form_discriminations,your_sexual_orientation) #,influence_of_the_discrimination,another_discriminations
 
 
-#influence of the discrimination and sexual orientation
-
-#sexual orientation and 
-
+#topic modelling
+# sotu_corpus <- quanteda::corpus(data$description)
+# corp = quanteda::corpus_reshape(sotu_corpus, to = "sentences")
+# #corp = corpus_reshape(data_corpus_inaugural, to = "paragraphs")
+# dfm = quanteda::dfm(corp, remove_punct=T, remove=stopwords("german"))
+# dfm = quanteda::dfm_trim(dfm, min_docfreq = 5)
+# 
+# dtm = quanteda::convert(dfm, to = "topicmodels")
+# set.seed(1)
+# 
+# m = topicmodels::LDA(dtm, method = "Gibbs", k = 5,  control = list(alpha = 0.1))
+# 
+# dtm = dtm[slam::row_sums(dtm) > 0, ]
+# phi = as.matrix(topicmodels::posterior(m)$terms)
+# theta <- as.matrix(topicmodels::posterior(m)$topics)
+# vocab <- colnames(phi)
+# doc.length = slam::row_sums(dtm)
+# term.freq = slam::col_sums(dtm)[match(vocab, colnames(dtm))]
+# 
+# json = LDAvis::createJSON(phi = phi, theta = theta, vocab = vocab,
+#                           doc.length = doc.length, term.frequency = term.freq)
+# route <- paste(path_data,"/Topic_modelling", sep="")
+# LDAvis::serVis(json, out.dir = route, open.browser = FALSE)

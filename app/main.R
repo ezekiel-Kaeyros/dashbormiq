@@ -112,7 +112,7 @@ server <- function(id, input, output, session) {
     #      passphrase = "passphrase_wihtout_keyring"
     #   )
     # )
-    router_server("home")
+    router_server("") #home
 
     home_page$server("home")
     quantitative_page$server("quantitative")

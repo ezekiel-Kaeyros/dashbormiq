@@ -1,3 +1,4 @@
+Sys.setlocale("LC_ALL","English")
 box::use(
   shiny.fluent[Text, fluentPage, reactOutput, renderReact, Dialog, JS,
                DialogFooter, PrimaryButton.shinyInput, DefaultButton.shinyInput,

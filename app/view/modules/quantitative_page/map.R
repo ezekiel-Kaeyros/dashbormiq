@@ -20,7 +20,7 @@ ui <- function(id) {
                     h1(class = "subtitle", ""),
                     p(class = "description", ""),
                     # Graph goes here
-                    leafletOutput(ns("map_plot"), width="500px", height=500) #450
+                    leafletOutput(ns("map_plot"), width="430px", height=470) #450
                 )
   )
 
@@ -31,7 +31,7 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$map_plot <- renderLeaflet({
-     import_data$m
+     import_data$map
     })
 
   })
