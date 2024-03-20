@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install -y libglpk40
 
 RUN apt-get update && apt-get install -y libsecret-1-0
 
+RUN apt-get update && \
+    apt-get install -y libudunits2-dev
+
 # Expose the application port
 EXPOSE 8180
 
