@@ -11,6 +11,7 @@ RUN R -e "install.packages('topicmodels')"
 
 # Installation du package LDAvis
 RUN R -e "install.packages('LDAvis')"
+RUN R -e "install.packages('quanteda')"
 
 # Make a directory in the container
 WORKDIR /app
