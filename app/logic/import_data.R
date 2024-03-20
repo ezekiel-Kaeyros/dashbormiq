@@ -1,4 +1,7 @@
 #   mongodb+srv://miq-user:Wy1N4zclOtlnR64d@miq-db.ppexwp3.mongodb.net/miq-db
+Sys.setlocale("LC_ALL","English")
+#Sys.setenv(LANG = "en_US.UTF-8")
+
 box::use(
   jsonlite[fromJSON],
   rjson[fromJSON],
@@ -112,6 +115,12 @@ data_personaf <- data_personaf %>%
   dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
                 pct1 = paste0(percentage, "%"))
 
+#generation of the data for the graph of frequency of sexual orientation
+data_sex <- as.data.frame(table(unlist(data$your_sexual_orientation)))
+data_sex <- data_sex %>%
+  dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
+                pct1 = paste0(percentage, "%"))
+
 # data_disc <- as.data.frame(table(unlist(data$another_discriminations)))
 # for (i in 1:nrow(data_disc)){
 #   data_disc$Freq1[i] <- round(data_disc$Freq[i]*nrow(data)/sum(data_disc$Freq),0)
@@ -146,16 +155,13 @@ Allemagne <- sf::st_read(file.dsph1,
 
 Allemagne <- Allemagne %>%
   rename(Province = NAME_2)
-# 
-#Allemagne$Value <-0
+
 data_sel <- Allemagne %>% select(NAME_1,Province)
 # 
 data_sel <- data_sel %>% filter(NAME_1=="Nordrhein-Westfalen")
 data_sel <- data_sel[order(data_sel$Province), ]
-# for (i in 1:nrow(data1)) {
-#   data1$Value[i] <- sample(0:50, 1)
-# }
 
+#construction of the dataframe to pass in the leaflet function
 data$place <- data$place_discrimination$city
 #data <- data[order(data$place),]
 data1 <- data %>% select(person_affected, place) %>%
@@ -165,18 +171,16 @@ data1 <- stats::na.omit(data1)
 data1 <- data1[order(data1$place),]
 data1$geometry <- data_sel$geometry
 data1$Province <- data_sel$Province
-# data1 <- as.data.frame(data1)
 
+max <- max(data1$Value)
+interval1 <- c(0, ceiling(max(data1$Value)/3), ceiling(max(data1$Value)*2/3), max)
 
-#interval1 <- c(0, 20, 40, 60)
-interval1 <- c(0, ceiling(max(data1$Value)/3), ceiling(max(data1$Value)*2/3), max(data1$value))
-#breaks <- stats::quantile(data1$Value, probs = c(0, 1/3, 2/3, 1), na.rm = TRUE)
-#data1$cat <- cut(data1$Value, breaks = breaks, labels = c("Faible", "Moyen", "Élevé"))
+#convert data to display the map
 data1 <- sf::st_as_sf(data1)
 
-# categories1 <- c("0-20", "20-40", "40-60")
-categories1 <- c("Faible", "Moyen", "Élevé")
-data1$cat <- cut(data1$Value, breaks = interval1, labels = categories1, right = FALSE)
+#data for legend
+categories1 <- c("Low", "Medium", "High")
+data1$cat <- cut(data1$Value, breaks = interval1, labels = categories1) #, right = FALSE
 
 labels <- sprintf(
   "<strong>%s</strong><br/>%g persons affected </sup>",
@@ -222,26 +226,6 @@ m <- leaflet(data = data1) %>%
 
   ) %>%
   setView(lng=7.661594, lat=51.433237, zoom=7)
-
-
-
-# data$another_discriminations <- sub("c\\(", "", data$another_discriminations)
-# data$another_discriminations <- sub("\\)", "", data$another_discriminations)
-# #data$another_discriminations <- sub('\\"', "", data$another_discriminations)
-# data$another_discriminations <- gsub('"', "", data$another_discriminations)
-# result <- data %>%
-#   mutate(another_discriminations = str_split(another_discriminations, ", ")) %>%
-#   unnest(another_discriminations) %>%
-#   group_by(age_cat, another_discriminations) %>%
-#   summarize(count = n())
-# result$another_discriminations <- gsub("\\b(Other form|namely)\\b", "Others", result$another_discriminations, ignore.case = TRUE)
-# result <- subset(result, another_discriminations != "character(0")
-
-# fig <- result
-# fig <- fig %>% plot_ly(x = ~age_cat, y = ~count, color = ~another_discriminations)
-# fig
-
-
 
 ################## Data to display age_discrimination ######################
 
@@ -409,11 +393,13 @@ data$prediction[data$prediction==5] <- "topic 5"
 
 # ajout d'une colonne province sur medar avec des valeurs aleatoire des regions du Nordrhein-Westfalen
 # Générer un échantillon aléatoire des indices de data1$Province
-sample_Province_indices <- sample(length(data1$Province), length(data$description), replace = TRUE)
-data$Province <- data1$Province[sample_Province_indices]
+# sample_Province_indices <- sample(length(data1$Province), length(data$description), replace = TRUE)
+# data$Province <- data1$Province[sample_Province_indices]
+data_topic <- data[stats::complete.cases(data$place), ]
+data_topic$Province <- data_topic$place
 
 # Création d'un dataframe des fréquences des sujets par province et jointure avec data1
-province_topics <- as.data.frame.matrix(table(data$Province, data$prediction))
+province_topics <- as.data.frame.matrix(table(data_topic$Province, data_topic$prediction))
 
 # Réinitialiser les noms de lignes
 province_topics$Province <- rownames(province_topics)
@@ -482,6 +468,14 @@ data_onreal <- data_onreal %>%
   dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
                 pct1 = paste0(percentage, "%"))
 
+#data to display graph for influence discrimination
+influence_discrimination <- as.data.frame(table(unlist(data$influence_of_the_discrimination)))
+influence_discrimination <- influence_discrimination %>%
+  dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
+                pct1 = paste0(percentage, "%"))
+influence_discrimination$Var1 <- gsub("Other, specify",
+                                 "Others", influence_discrimination$Var1)
+
 ############### Data to display previous mesures ################
 data$previous_measures <- data$masures_taken
 previous_measures <-as.data.frame(table(unlist(data$previous_measures)))
@@ -491,10 +485,10 @@ previous_measures_f <- rbind(previous_measures,new_line)
 previous_measures_f <- previous_measures_f %>%
   dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
                 pct1 = paste0(percentage, "%"))
-previous_measures_f$Var1 <- gsub("I have reported the case to the police",
+previous_measures_f$Var1 <- gsub("I reported the case to the police",
                                  "Reported to police", previous_measures_f$Var1)
-previous_measures_f$Var1 <- gsub("I have visited a counseling center",
-                                 "Counceling center visited", previous_measures_f$Var1)
+previous_measures_f$Var1 <- gsub("I reported the case to another reporting agency, specifically",
+                                 "reported to another reporting agency", previous_measures_f$Var1)
 previous_measures_f$Var1 <- gsub("other, specify",
                                  "Others", previous_measures_f$Var1)
 
@@ -503,7 +497,7 @@ previous_measures_f$Var1 <- gsub("other, specify",
 data$sexual_orientation <- data$your_sexual_orientation
 data$previous_measures_taken <- data$masures_taken
 key_var <- c("person_affected", "gender",
-             "influence_of_the_discrimination", "another_discriminations", "age", "location",
+             "influence_of_the_discrimination", "another_form_discriminations", "age", "location",
              "sexual_orientation", "previous_measures_taken")
 text_var <- gsub("_", " ", key_var)
 options_var <- lapply(seq_along(key_var), function(i) {
@@ -521,7 +515,8 @@ df$your_sexual_orientation <- gsub("c\\(", "", df$your_sexual_orientation)
 df$your_sexual_orientation <- gsub("\\)", "", df$your_sexual_orientation)
 
 df <- df %>% dplyr::select(person_affected, gender, age, time_incident,report_date,
-                    place_discrimination,description, masures_taken,influence_of_the_discrimination) #,influence_of_the_discrimination,another_discriminations
+                    place_discrimination,description, masures_taken,influence_of_the_discrimination,
+                    another_form_discriminations,your_sexual_orientation) #,influence_of_the_discrimination,another_discriminations
 
 
 #influence of the discrimination and sexual orientation

@@ -136,6 +136,10 @@ server <- function(id, input, output, session) {
         write.csv(data, file, row.names = FALSE)
       }
     )
+    
+    observeEvent(input$export_bivariate, {
+      shinyjs::click("download")
+    })
     #outputOptions (output, "download", suspendWhenHidden=FALSE)
 
 }

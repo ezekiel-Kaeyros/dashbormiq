@@ -19,7 +19,7 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   cards$card_ui("Frequency of Different Forms of Discrimination by Age Group",
-                ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "PieSingle")),
+                ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     # Graph goes here
                     uiOutput(ns("plot_personage"))
@@ -40,9 +40,9 @@ server <- function(id) {
     observeEvent(input$toggleButton, {
       button_state(!button_state())
       if (button_state()) {
-        updateActionButton.shinyInput(session, "toggleButton", iconProps = list("iconName" = "BarChart4"))
-      } else {
         updateActionButton.shinyInput(session, "toggleButton", iconProps = list("iconName" = "table"))
+      } else {
+        updateActionButton.shinyInput(session, "toggleButton", iconProps = list("iconName" = "BarChart4"))
       }
     })
 

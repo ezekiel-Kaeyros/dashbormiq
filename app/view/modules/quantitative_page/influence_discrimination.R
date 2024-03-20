@@ -1,10 +1,10 @@
+
 box::use(
   shiny[moduleServer, div,NS, h3, p, uiOutput,
-        observeEvent,reactiveValues, renderUI,reactiveVal, renderText,plotOutput,
-        renderPlot],
+        observeEvent,reactiveValues, renderUI,reactiveVal, renderText],
   shiny.fluent[ActionButton.shinyInput,updateActionButton.shinyInput],
   plotly[plotlyOutput, renderPlotly, add_trace, layout, plot_ly, config],
-  magrittr[`%>%`], dplyr,graphics[axis, text],RColorBrewer
+  magrittr[`%>%`]
 )
 
 box::use(
@@ -12,27 +12,31 @@ box::use(
   app/logic/import_data,
 )
 
+
+
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Previous measures taken",#"",
+  cards$card_ui("Influence of discrimination",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "subtitle", import_data$previous_measures_f$Var1[which.max(import_data$previous_measures_f$percentage)]), #a refaire
-                    p(class = "description", "Most previous measure taken"),
+                    h3(class = "subtitle", import_data$influence_discrimination$Var1[which.max(import_data$influence_discrimination$percentage)]),
+                    p(class = "description", "Reccurent influence of discrimation"),
                     # Graph goes here
-                    uiOutput(ns("previous_measures"))#,width="500px", height = 485) #,width="500px"
+                    uiOutput(ns("plot_inf_disc"))
                 )
   )
-
+  
 }
 
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    #ns <- NS(id)
+    #output$plot_personaf <- render
     button_state <- reactiveVal(FALSE)
-
+    
     observeEvent(input$toggleButton, {
       button_state(!button_state())
       if (button_state()) {
@@ -43,27 +47,33 @@ server <- function(id) {
     })
     
     toggle <- reactiveValues(barplot = TRUE)
-    output$previous_measures <- renderUI({
+    output$plot_inf_disc <- renderUI({
       if (toggle$barplot) {
         plotlyOutput(ns("barplot"))
       } else {
         plotlyOutput(ns("piechart"))
       }
     })
-
+    
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$previous_measures_f, x = ~Var1,
+      plotly::plot_ly(import_data$influence_discrimination, x = ~Var1,
                       type = "bar",
                       y = ~percentage,
-                      marker =list(color="#F8D1A4"),
-                      text = paste(import_data$previous_measures_f$pct1, sep = ""), textposition = 'outside',
+                      #marker = list(color = c("#0B5345", "#148F77", "#196F3D", "#52BE80", "#7DCEA0", "#CA6F1E")),
+                      # marker = list(color = c("#483D8B", "slateblue","#0077BE", "#5696CC",
+                      #                         "#76B7DA",  "#A6DAFF")),
+                      marker =list(color="#F9AFC5"),
+                      #colors = "darkviolet",
+                      #colors = c("darkgoldenrod", "#663399", "darkblue", "darkgreen"),
+                      text = paste(import_data$influence_discrimination$pct1, sep = ""), textposition = 'outside',
                       textfont = list(size = 10), # size is defined here
-                      hovertext = paste("Action: ", import_data$previous_measures_f$Var1,
-                                        "<br>Number of persons :", import_data$previous_measures_f$Freq,
-                                        "<br>Percentage :",import_data$previous_measures_f$pct1), #) %>%
+                      hovertext = paste("Influence: ", import_data$influence_discrimination$Var1,
+                                        "<br>Number of persons :", import_data$influence_discrimination$Freq,
+                                        "<br>Percentage :",import_data$influence_discrimination$pct1), #) %>%
                       #"<br>Percentage :", data_marsta()$pct1),
                       hoverinfo = 'text') %>%
         layout(title = "",
+               #legend = list(x = 100, y = 0.95, title=list(color= "blue", text='<b> </b>')),
                uniformtext=list(minsize=10, mode='show'),
                xaxis = list(title = "<b> </b>", #font = list(size = 0),
                             # change x-axix size
@@ -77,63 +87,33 @@ server <- function(id) {
                             tickfont = list(size = 12),
                             ticksuffix = "%", showgrid = FALSE)
         ) %>%
-        config(displayModeBar = T,displaylogo = FALSE, modeBarButtonsToRemove = list(
-          'sendDataToCloud',
-          #'toImage',
-          'autoScale2d',
-          'zoomIn2d',
-          "zoomOut2d",
-          'toggleSpikelines',
-          'resetScale2d',
-          'lasso2d',
-          'zoom2d',
-          'pan2d',
-          'select2d',#,
-          'hoverClosestCartesian',#,
-          'hoverCompareCartesian'),
-          scrollZoom = T)
-
+        config(displayModeBar = F,
+               scrollZoom = T)
     })
-
+    
     output$piechart <- renderPlotly({
-      plot_ly(import_data$previous_measures_f, labels= ~Var1,
+      plot_ly(import_data$influence_discrimination, labels= ~Var1,
               values= ~Freq, type="pie",
               hoverinfo = 'text',
               textinfo = 'label+percent',
               insidetextfont = list(color = '#FFFFFF'),
-              text = ~paste("Action :", Var1,
+              text = ~paste("Influence :", Var1,
                             "<br>Number of persons :", Freq,
                             "<br>Percentage :", pct1),
               # marker = list(colors = c("#5072A7", "#1D428A","#0000ff","#7630ff","#20B2AA"),
               #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              marker = list(colors = c("#F8D1A4", "#F8D1A4","#F8D1A4","#F8D1A4","#F8D1A4"),
+              marker = list(colors = c("#F9AFC5", "#F9AFC5","#F9AFC5","#F9AFC5","#F9AFC5"),
                             line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
         layout(title="",
                xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
-        layout(showlegend = FALSE) %>%
-        config(displayModeBar = T,displaylogo = FALSE, modeBarButtonsToRemove = list(
-          'sendDataToCloud',
-          'hoverClosestPie',
-          #'toImage',
-          'autoScale2d',
-          'zoomIn2d',
-          "zoomOut2d",
-          'toggleSpikelines',
-          'resetScale2d',
-          'lasso2d',
-          'zoom2d',
-          'pan2d',
-          'select2d',#,
-          'hoverClosestCartesian',#,
-          'hoverCompareCartesian'),
-          scrollZoom = T)
+        layout(showlegend = FALSE)
     })
-
+    
     observeEvent(input$toggleButton, {
       toggle$barplot <- !toggle$barplot
     })
-
-
+    
+    
   })
 }

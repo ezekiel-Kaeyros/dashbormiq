@@ -122,6 +122,7 @@ server <- function(id) {
       date2_react(input$date2)
       saveRDS(date2_react(), paste("app/data/","date2",".rds", sep = ""))
     })
+    
 
     date3_react <-reactiveVal(NULL)
     observe({

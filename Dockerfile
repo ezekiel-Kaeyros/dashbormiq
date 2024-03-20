@@ -10,6 +10,7 @@ RUN R -e "install.packages(c('dplyr', 'htmlwidgets', 'jsonlite', 'keyring', 'tid
 # Make a directory in the container
 WORKDIR /app
 
+# Copy your files into the container
 COPY . /app
 
 # Install libglpk40

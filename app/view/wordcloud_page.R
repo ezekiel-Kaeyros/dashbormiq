@@ -33,36 +33,3 @@ wordcloud_server <- function(id) {
     })
   })
 }
-
-
-
-
-
-#'
-#' wordcloud2[wordcloud2Output,renderWordcloud2]
-#'
-#'
-#' box::use(
-#'   app/view/components/layouts,
-#'   app/logic/import_data
-#' )
-#'
-#' #' @export
-#' wordcloud_ui <- function(id) {
-#'   ns <- NS(id)
-#'   tagList(
-#'     layouts$wordcloud_layout(wordcloud2Output(ns('wordcloud')))
-#'   )
-#'
-#' }
-#'
-#' #' @export
-#' wordcloud_server <- function(id) {
-#'   moduleServer(id, function(input, output, session) {
-#'     output$wordcloud <- renderWordcloud2({
-#'       import_data$generate_wordcloud(import_data$data$description)
-#'     })
-#'
-#'   })
-#' }
-#'
