@@ -9,7 +9,8 @@ box::use(
 
 box::use(
   app/view/components/ui/cards,
-  app/logic/import_data,
+  app/logic/quantitative/date_occurance_logic,
+  app/logic/functions
 )
 
 
@@ -21,7 +22,7 @@ ui <- function(id) {
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     h3(class = "description", "Modal temporal distance :"),
-                    p(class = "subtitle", import_data$data_months$temporal_class[which.max(import_data$data_months$total)]),
+                    p(class = "subtitle", shiny::textOutput(ns("text"))),
                     
                     # Graph goes here
                     uiOutput(ns("plot_date"))
@@ -31,10 +32,11 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    #ns <- NS(id)
+    data_months <- date_occurance_logic$data_temp(filter)
+    data_months1 <- date_occurance_logic$data_temp1(filter)
     #output$plot_personaf <- render
     button_state <- reactiveVal(FALSE)
 
@@ -57,63 +59,19 @@ server <- function(id) {
     })
 
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$data_months, x = ~temporal_class,
-                      type = "bar",
-                      y = ~percentage,
-                      #marker = list(color = c("#0B5345", "#148F77", "#196F3D", "#52BE80", "#7DCEA0", "#CA6F1E")),
-                      marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                              "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A")),
-                      #marker =list(color="#F9AFC5"),
-                      #colors = "darkviolet",
-                      #colors = c("darkgoldenrod", "#663399", "darkblue", "darkgreen"),
-                      text = paste(import_data$data_months$pct1, sep = ""), textposition = 'outside',
-                      textfont = list(size = 10), # size is defined here
-                      hovertext = paste("Time: ", import_data$data_months$temporal_class,
-                                        "<br>Number of persons :", import_data$data_months$total,
-                                        "<br>Percentage :",import_data$data_months$pct1), #) %>%
-                      #"<br>Percentage :", data_marsta()$pct1),
-                      hoverinfo = 'text') %>%
-        layout(title = "",
-               #legend = list(x = 100, y = 0.95, title=list(color= "blue", text='<b> </b>')),
-               uniformtext=list(minsize=10, mode='show'),
-               xaxis = list(title = "<b> </b>", #font = list(size = 0),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            # change x-title size
-                            titlefont = list(size = 16), #type="date", tickformat="%Y%B",  tickformat = "%b-%Y",
-                            tickangle= -45, showgrid = FALSE),
-               yaxis = list(title = "<b> Percentage </b>",
-                            titlefont = list(size = 12),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            ticksuffix = "%", showgrid = FALSE)
-        ) %>%
-        config(displayModeBar = F,
-               scrollZoom = T)
+      functions$generate_barplot(data_months,"Time")
     })
 
     output$piechart <- renderPlotly({
-      plot_ly(import_data$data_months, labels= ~temporal_class,
-              values= ~total, type="pie",
-              hoverinfo = 'text',
-              textinfo = 'label+percent',
-              insidetextfont = list(color = '#FFFFFF'),
-              text = ~paste("Time :", temporal_class,
-                            "<br>Number of persons :", total,
-                            "<br>Percentage :", pct1),
-              marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                      "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A"),
-                            line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              # marker = list(colors = c("#F9AFC5", "#F9AFC5","#F9AFC5","#F9AFC5","#F9AFC5"),
-              #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-        layout(title="",
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
-        layout(showlegend = FALSE)
+      functions$generate_piechart(data_months,"Time")
     })
 
     observeEvent(input$toggleButton, {
       toggle$barplot <- !toggle$barplot
+    })
+    output$text <- shiny::renderText({
+      names(table(data_months1$Var1))[which.max(table(data_months1$Var1))]
+      
     })
 
 

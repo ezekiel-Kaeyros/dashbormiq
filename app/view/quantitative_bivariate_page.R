@@ -24,6 +24,7 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
     age_discrimination$server("affected_person")
     age_influence$server("age_of_affected_person")
     gender_discrimination$server("gender_discrimination")

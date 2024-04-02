@@ -19,7 +19,7 @@ box::use(
   app/view/overview_page,
   app/view/wordcloud_page,
   app/view/quantitative_bivariate_page,
-  app/logic/import_data
+  app/logic/export_data
 )
 
 # credentials <- data.frame(
@@ -123,7 +123,7 @@ server <- function(id, input, output, session) {
     wordcloud_page$wordcloud_server("wordcloud")
     quantitative_bivariate_page$server("quantitative_bivariate")
 
-    data <- import_data$df
+    data <- export_data$df
     observeEvent(input$export_quantitative, {
       shinyjs::click("download")
     })

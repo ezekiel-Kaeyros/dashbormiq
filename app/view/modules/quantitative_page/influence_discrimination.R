@@ -9,7 +9,8 @@ box::use(
 
 box::use(
   app/view/components/ui/cards,
-  app/logic/import_data,
+  app/logic/quantitative/influence_discrimination_logic,
+  app/logic/functions
 )
 
 
@@ -21,7 +22,7 @@ ui <- function(id) {
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     h3(class = "description", "Reccurent foundation of discrimation :"),
-                    p(class = "subtitle", import_data$influence_discrimination$Var1[which.max(import_data$influence_discrimination$percentage)]),
+                    p(class = "subtitle", shiny::textOutput(ns("text"))),
                     
                     # Graph goes here
                     uiOutput(ns("plot_inf_disc"))
@@ -31,9 +32,10 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    influence_discrimination <- influence_discrimination_logic$influence_discrimination(filter)
     #ns <- NS(id)
     #output$plot_personaf <- render
     button_state <- reactiveVal(FALSE)
@@ -57,63 +59,18 @@ server <- function(id) {
     })
     
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$influence_discrimination, x = ~Var1,
-                      type = "bar",
-                      y = ~percentage,
-                      #marker = list(color = c("#0B5345", "#148F77", "#196F3D", "#52BE80", "#7DCEA0", "#CA6F1E")),
-                      marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                              "#0000ff",  "#4b0082", "#8f00ff")),
-                     # marker =list(color="#F9AFC5"),
-                      #colors = "darkviolet",
-                      #colors = c("darkgoldenrod", "#663399", "darkblue", "darkgreen"),
-                      text = paste(import_data$influence_discrimination$pct1, sep = ""), textposition = 'outside',
-                      textfont = list(size = 10), # size is defined here
-                      hovertext = paste("Influence: ", import_data$influence_discrimination$Var1,
-                                        "<br>Number of persons :", import_data$influence_discrimination$Freq,
-                                        "<br>Percentage :",import_data$influence_discrimination$pct1), #) %>%
-                      #"<br>Percentage :", data_marsta()$pct1),
-                      hoverinfo = 'text') %>%
-        layout(title = "",
-               #legend = list(x = 100, y = 0.95, title=list(color= "blue", text='<b> </b>')),
-               uniformtext=list(minsize=10, mode='show'),
-               xaxis = list(title = "<b> </b>", #font = list(size = 0),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            # change x-title size
-                            titlefont = list(size = 16), #type="date", tickformat="%Y%B",  tickformat = "%b-%Y",
-                            tickangle= -45, showgrid = FALSE),
-               yaxis = list(title = "<b> Percentage </b>",
-                            titlefont = list(size = 12),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            ticksuffix = "%", showgrid = FALSE)
-        ) %>%
-        config(displayModeBar = F,
-               scrollZoom = T)
+      functions$generate_barplot(influence_discrimination,"Base of the discrimination")
     })
     
     output$piechart <- renderPlotly({
-      plot_ly(import_data$influence_discrimination, labels= ~Var1,
-              values= ~Freq, type="pie",
-              hoverinfo = 'text',
-              textinfo = 'label+percent',
-              insidetextfont = list(color = '#FFFFFF'),
-              text = ~paste("Influence :", Var1,
-                            "<br>Number of persons :", Freq,
-                            "<br>Percentage :", pct1),
-              marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                      "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A"),
-                            line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              #marker = list(colors = c("#F9AFC5", "#F9AFC5","#F9AFC5","#F9AFC5","#F9AFC5"),
-                            # line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-        layout(title="",
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
-        layout(showlegend = FALSE)
+      functions$generate_piechart(influence_discrimination,"Base of the discrimination")
     })
     
     observeEvent(input$toggleButton, {
       toggle$barplot <- !toggle$barplot
+    })
+    output$text <- shiny::renderText({
+      influence_discrimination$Var1[which.max(influence_discrimination$percentage)]
     })
     
     

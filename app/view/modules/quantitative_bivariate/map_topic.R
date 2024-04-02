@@ -6,7 +6,8 @@ box::use(
 
 box::use(
   app/view/components/ui/cards,
-  app/logic/import_data
+  app/logic/import_data,
+  app/logic/quantitative_bivariate/map_topic_logic
 )
 
 
@@ -14,15 +15,15 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   #leafletOutput("map_plot")
-  cards$card_ui("Map of Topics by Province",
-                "",
-                div(class = "card_content",
-                    h1(class = "subtitle", ""),
-                    p(class = "description", ""),
-                    # Graph goes here
-                    leafletOutput(ns("map_plot"), width="600px", height=405) #450
-                )
-  )
+  # cards$card_ui("Map of Topics by Province",
+  #               "",
+  #               div(class = "card_content",
+  #                   h1(class = "subtitle", ""),
+  #                   p(class = "description", ""),
+  #                   # Graph goes here
+  #                   leafletOutput(ns("map_plot"), width="600px", height=405) #450
+  #               )
+  # )
 
 }
 
@@ -30,9 +31,9 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    output$map_plot <- renderLeaflet({
-     import_data$topic_map
-    })
+    # output$map_plot <- renderLeaflet({
+    #  map_topic_logic$topic_map
+    # })
 
   })
 }

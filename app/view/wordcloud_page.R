@@ -13,7 +13,8 @@ box::use(
 
 box::use(
   app/view/components/layouts,
-  app/logic/import_data
+  app/logic/import_data,
+  app/logic/wordcloud_logic
 )
 
 #' @export
@@ -29,7 +30,7 @@ wordcloud_ui <- function(id) {
 wordcloud_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     output$wordcloud <- shiny::renderUI({
-        import_data$generate_wordcloud(import_data$data$description)
+        wordcloud_logic$generate_wordcloud(import_data$data$description)
     })
   })
 }

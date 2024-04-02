@@ -10,7 +10,8 @@ box::use(
 
 box::use(
     app/view/components/ui/cards,
-    app/logic/import_data,
+    app/logic/quantitative_bivariate/age_inf_logic,
+    app/logic/functions
 )
 
 
@@ -56,26 +57,11 @@ server <- function(id) {
     })
 
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$table_age_inf, x = ~category_age, y = ~Freq, color = ~influence, type = "bar", colors = yiord_palette, text = ~paste("Age Group: ", category_age, "<br>Frequency: ", Freq, "<br>Influence: ", influence)) %>%
-        layout(#title = "Frequency of Different Types of Influence by Age Group",
-               xaxis = list(title = "Age Group"),
-               yaxis = list(title = "Frequency"),
-               barmode = "group") %>%
-        style(hoverinfo = "text")
+      functions$generate_groupedbarplot(age_inf_logic$table_age_inf,"Age group","Influence")
     })
 
     output$piechart <- renderPlotly({
-      gg <- ggplot(import_data$table_age_inf, aes(category_age, influence)) +
-        geom_tile(aes(fill = Freq)) +
-        geom_text(aes(label = round(Freq, 1), text = paste("Age Group:", category_age, "\nInfluence:", influence, "\nCount:", Freq))) +
-        scale_fill_gradient(low = "#FED976", high = "red") +
-        labs(#title = "Frequency of Different Types of Influence by Age Group",
-             x = "Age Group",
-             y = "Influence",
-             fill = "Count") +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-      ggplotly(gg, tooltip = "text")
+      functions$generate_table(age_inf_logic$table_age_inf,"Age group", "Influence")
     })
 
     observeEvent(input$toggleButton, {

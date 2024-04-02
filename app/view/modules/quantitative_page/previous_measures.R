@@ -9,7 +9,8 @@ box::use(
 
 box::use(
   app/view/components/ui/cards,
-  app/logic/import_data,
+  app/logic/quantitative/previous_measures_logic,
+  app/logic/functions
 )
 
 #' @export
@@ -19,7 +20,7 @@ ui <- function(id) {
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     h3(class = "description", "Most previous measure taken :"),
-                    p(class = "subtitle", import_data$previous_measures_f$Var1[which.max(import_data$previous_measures_f$percentage)]), #a refaire
+                    p(class = "subtitle", shiny::textOutput(ns("text"))), #a refaire
                     
                     # Graph goes here
                     uiOutput(ns("previous_measures"))#,width="500px", height = 485) #,width="500px"
@@ -29,9 +30,10 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    previous_measures_f <- previous_measures_logic$previous_measures(filter)
     button_state <- reactiveVal(FALSE)
 
     observeEvent(input$toggleButton, {
@@ -53,89 +55,18 @@ server <- function(id) {
     })
 
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$previous_measures_f, x = ~Var1,
-                      type = "bar",
-                      y = ~percentage,
-                      marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                              "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A")),
-                      #marker =list(color="#F8D1A4"),
-                      text = paste(import_data$previous_measures_f$pct1, sep = ""), textposition = 'outside',
-                      textfont = list(size = 10), # size is defined here
-                      hovertext = paste("Action: ", import_data$previous_measures_f$Var1,
-                                        "<br>Number of persons :", import_data$previous_measures_f$Freq,
-                                        "<br>Percentage :",import_data$previous_measures_f$pct1), #) %>%
-                      #"<br>Percentage :", data_marsta()$pct1),
-                      hoverinfo = 'text') %>%
-        layout(title = "",
-               uniformtext=list(minsize=10, mode='show'),
-               xaxis = list(title = "<b> </b>", #font = list(size = 0),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            # change x-title size
-                            titlefont = list(size = 16), #type="date", tickformat="%Y%B",  tickformat = "%b-%Y",
-                            tickangle= -45, showgrid = FALSE),
-               yaxis = list(title = "<b> Percentage </b>",
-                            titlefont = list(size = 12),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            ticksuffix = "%", showgrid = FALSE)
-        ) %>%
-        config(displayModeBar = T,displaylogo = FALSE, modeBarButtonsToRemove = list(
-          'sendDataToCloud',
-          #'toImage',
-          'autoScale2d',
-          'zoomIn2d',
-          "zoomOut2d",
-          'toggleSpikelines',
-          'resetScale2d',
-          'lasso2d',
-          'zoom2d',
-          'pan2d',
-          'select2d',#,
-          'hoverClosestCartesian',#,
-          'hoverCompareCartesian'),
-          scrollZoom = T)
-
+      functions$generate_barplot(previous_measures_f,"Action")
     })
 
     output$piechart <- renderPlotly({
-      plot_ly(import_data$previous_measures_f, labels= ~Var1,
-              values= ~Freq, type="pie",
-              hoverinfo = 'text',
-              textinfo = 'label+percent',
-              insidetextfont = list(color = '#FFFFFF'),
-              text = ~paste("Action :", Var1,
-                            "<br>Number of persons :", Freq,
-                            "<br>Percentage :", pct1),
-              marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                      "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A"),
-                            line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              # marker = list(colors = c("#F8D1A4", "#F8D1A4","#F8D1A4","#F8D1A4","#F8D1A4"),
-              #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-        layout(title="",
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
-        layout(showlegend = FALSE) %>%
-        config(displayModeBar = T,displaylogo = FALSE, modeBarButtonsToRemove = list(
-          'sendDataToCloud',
-          'hoverClosestPie',
-          #'toImage',
-          'autoScale2d',
-          'zoomIn2d',
-          "zoomOut2d",
-          'toggleSpikelines',
-          'resetScale2d',
-          'lasso2d',
-          'zoom2d',
-          'pan2d',
-          'select2d',#,
-          'hoverClosestCartesian',#,
-          'hoverCompareCartesian'),
-          scrollZoom = T)
+      functions$generate_piechart(previous_measures_f,"Action")
     })
 
     observeEvent(input$toggleButton, {
       toggle$barplot <- !toggle$barplot
+    })
+    output$text <- shiny::renderText({
+      previous_measures_f$Var1[which.max(previous_measures_f$percentage)]
     })
 
 

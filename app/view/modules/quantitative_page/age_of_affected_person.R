@@ -9,8 +9,9 @@ box::use(
 box::use(
   app/view/components/ui/cards,
   app/logic/import_data,
+  app/logic/quantitative/age_affected_person_logic,
+  app/logic/functions
 )
-
 
 
 #' @export
@@ -18,9 +19,9 @@ ui <- function(id) {
   ns <- NS(id)
   cards$card_ui("Age categories of affected persons",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "PieSingle")),
-                div(class = "card_content",
-                    h3(class = "description", "Most affected age group :"),
-                    p(class = "subtitle", names(table(import_data$data$age))[which.max(table(import_data$data$age))]),
+                div(class = "card_content","Most affected age group :" ,
+                    h3(class = "description",shiny::textOutput(ns("text"))), 
+                    p(class = "subtitle", ),
                     # Graph goes here
                     uiOutput(ns("plot_personage"))
                 )
@@ -29,13 +30,14 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    #ns <- NS(id)
-    #output$plot_personaf <- render
+    data_personage <- age_affected_person_logic$data_age(filter)
+    data_personage1 <- age_affected_person_logic$data_age1(filter)
+    
     button_state <- reactiveVal(FALSE)
-
+    
     observeEvent(input$toggleButton, {
       button_state(!button_state())
       if (button_state()) {
@@ -44,7 +46,7 @@ server <- function(id) {
         updateActionButton.shinyInput(session, "toggleButton", iconProps = list("iconName" = "PieSingle"))
       }
     })
-
+    
     toggle <- reactiveValues(piechart = TRUE)
     output$plot_personage <- renderUI({
       if (toggle$piechart) {
@@ -53,66 +55,51 @@ server <- function(id) {
         plotlyOutput(ns("barplot"))
       }
     })
-
+    
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$data_age, x = ~Var1,
-                      type = "bar",
-                      y = ~percentage,
-                      #marker = list(color = c("#0B5345", "#148F77", "#196F3D", "#52BE80", "#7DCEA0", "#CA6F1E")),
-                      marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                              "#0000ff",  "#4b0082", "#8f00ff")),
-                      #marker =list(color="#F8D1A4"),
-                      text = paste(import_data$data_age$pct1, sep = ""), textposition = 'outside',
-                      textfont = list(size = 10), # size is defined here
-                      hovertext = paste("Age: ", import_data$data_age$Var1,
-                                        "<br>Number of persons :", import_data$data_age$Freq,
-                                        "<br>Percentage :",import_data$data_age$pct1), #) %>%
-                      #"<br>Percentage :", data_marsta()$pct1),
-                      hoverinfo = 'text') %>%
-        layout(title = "",
-               #legend = list(x = 100, y = 0.95, title=list(color= "blue", text='<b> </b>')),
-               uniformtext=list(minsize=10, mode='show'),
-               xaxis = list(title = "<b> </b>", #font = list(size = 0),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            # change x-title size
-                            titlefont = list(size = 16), #type="date", tickformat="%Y%B",  tickformat = "%b-%Y",
-                            tickangle= -45, showgrid = FALSE),
-               yaxis = list(title = "<b> Percentage </b>",
-                            titlefont = list(size = 12),
-                            # change x-axix size
-                            tickfont = list(size = 12),
-                            ticksuffix = "%", showgrid = FALSE)
-        ) %>%
-        config(displayModeBar = F,
-               scrollZoom = T)
+      functions$generate_barplot(data_personage,"Age")
     })
-
+    
     output$piechart <- renderPlotly({
-      plot_ly(import_data$data_age, labels= ~Var1,
-              values= ~Freq, type="pie",
-              hoverinfo = 'text',
-              textinfo = 'label+percent',
-              insidetextfont = list(color = '#FFFFFF'),
-              text = ~paste("Age :", Var1,
-                            "<br>Number of persons :", Freq,
-                            "<br>Percentage :", pct1),
-              marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                      "#0000ff",  "#4b0082", "#8f00ff"),
-                       line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              # marker = list(colors = c("#F8D1A4", "#F8D1A4","#F8D1A4","#F8D1A4","#F8D1A4"),
-              #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-        layout(title="",
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
-        layout(showlegend = FALSE)
+      functions$generate_piechart(data_personage,"Age")
     })
-
+    # output$barplot <- renderUI ({
+    #   if (filter=="An organization/institution") {
+    #     shiny::textOutput(ns("text1"))
+    #   } else {
+    #     plotly::plotlyOutput(ns("plot1"))
+    #   }
+    # })
+    # output$piechart <- renderUI ({
+    #   if (filter=="An organization/institution") {
+    #     shiny::textOutput(ns("text1"))
+    #   } else {
+    #     plotly::plotlyOutput(ns("plot2"))
+    #   }
+    # })
+    # output$text1 <- shiny::renderText({
+    #     paste("No data concerning age of the organization")
+    # })
+    # # output$text2 <- shiny::renderText({
+    # #   paste("No data concerning age of the organization")
+    # # })
+    # output$plot1 <- renderPlotly({
+    #     functions$generate_barplot(data_personage,"Age")
+    # })
+    # output$plot2 <- renderPlotly({
+    #   functions$generate_piechart(data_personage,"Age")
+    # })
+    # 
     observeEvent(input$toggleButton, {
       toggle$piechart <- !toggle$piechart
     })
-
-
+    
+    output$text <- shiny::renderText({
+      # max_index <- which.max(data_personage$Freq)
+      # data_personage[max_index, ]$Var1
+      names(table(data_personage1$age))[which.max(table(data_personage1$age))]
+    })
+    
   })
 }
 

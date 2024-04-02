@@ -6,7 +6,9 @@ box::use(
 
 box::use(
   app/view/components/ui/cards,
-  app/logic/import_data
+  app/logic/import_data,
+  app/logic/quantitative/map_logic
+  
 )
 
 
@@ -31,7 +33,7 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$map_plot <- renderLeaflet({
-     import_data$map
+     map_logic$map
     })
 
   })

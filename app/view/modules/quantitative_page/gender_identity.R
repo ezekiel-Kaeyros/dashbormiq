@@ -10,6 +10,8 @@ box::use(
 box::use(
   app/view/components/ui/cards,
   app/logic/import_data,
+  app/logic/quantitative/gender_logic,
+  app/logic/functions
 )
 
 
@@ -21,7 +23,7 @@ ui <- function(id) {
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     h3(class = "description", "Different genders :"),
-                    p(class = "subtitle", length(unique(import_data$data$gender))),
+                    p(class = "subtitle", shiny::textOutput(ns("subtitle"))),
                     
                     # Graph goes here
                     uiOutput(ns("plot_persongen"))
@@ -31,11 +33,10 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    #ns <- NS(id)
-    #output$plot_personaf <- render
+    data_gender <- gender_logic$data_gender(filter)
     button_state <- reactiveVal(FALSE)
 
     observeEvent(input$toggleButton, {
@@ -57,62 +58,20 @@ server <- function(id) {
     })
 
     output$barplot <- renderPlotly({
-      plotly::plot_ly(import_data$data_gen, x = ~Var1,
-                      type = "bar",
-                      y = ~percentage,
-                      marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                              "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A")),
-                      #                         "#76B7DA",  "#A6DAFF")),
-                      #marker =list(color="#F8D1A4"),
-                      #colors = "darkviolet",
-                      #colors = c("darkgoldenrod", "#663399", "darkblue", "darkgreen"),
-                      text = paste(import_data$data_gen$pct1, sep = ""), textposition = 'outside',
-                      hovertext = paste("Gender: ", import_data$data_gen$Var1,
-                                        "<br>Number of persons :", import_data$data_gen$Freq,
-                                        "<br>Percentage :",import_data$data_gen$pct1), #) %>%
-                      #"<br>Percentage :", data_marsta()$pct1),
-                      hoverinfo = 'text') %>%
-        layout(title = "",
-               #legend = list(x = 100, y = 0.95, title=list(color= "blue", text='<b> </b>')),
-               uniformtext=list(minsize=10, mode='show'),
-               xaxis = list(title = "<b> </b>", #font = list(size = 0),
-                            # change x-axix size
-                            tickfont = list(size = 14),
-                            # change x-title size
-                            titlefont = list(size = 16), #type="date", tickformat="%Y%B",  tickformat = "%b-%Y",
-                            tickangle= -45, showgrid = FALSE),
-               yaxis = list(title = "<b> Percentage </b>",
-                            titlefont = list(size = 16),
-                            # change x-axix size
-                            tickfont = list(size = 14),
-                            ticksuffix = "%", showgrid = FALSE)
-        ) %>%
-        config(displayModeBar = F,
-               scrollZoom = T)
+      functions$generate_barplot(data_gender,"Gender")
     })
 
     output$piechart <- renderPlotly({
-      plot_ly(import_data$data_gen, labels= ~Var1,
-              values= ~Freq, type="pie",
-              hoverinfo = 'text',
-              textinfo = 'label+percent',
-              insidetextfont = list(color = '#FFFFFF'),
-              text = ~paste("Gender :", Var1,
-                            "<br>Number of persons :", Freq,
-                            "<br>Percentage :", pct1),
-              marker = list(color = c("#ff0000", "#ffa500","#ffff00", "#00ff00",
-                                      "#0000ff",  "#4b0082", "#8f00ff","#FE2E9A"),
-                            line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-              # marker = list(colors = c("#F8D1A4", "#F8D1A4","#F8D1A4","#F8D1A4","#F8D1A4"),
-              #               line = list(color = '#FFFFFF', width = 1),showlegend = FALSE)) %>%
-        layout(title="",
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
-        layout(showlegend = FALSE)
+      functions$generate_piechart(data_gender,"Gender")
     })
 
     observeEvent(input$toggleButton, {
       toggle$barplot <- !toggle$barplot
+    })
+    
+    output$subtitle <- shiny::renderText({
+      nrow(data_gender)
+      #data_gender$Var1[which.max(data_gender$Freq)]
     })
 
 

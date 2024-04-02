@@ -6,7 +6,7 @@ box::use(
   shiny[div, tags, NS, moduleServer, tagList, h2, h5, p, actionButton,h3,
         reactiveVal, observeEvent, radioButtons,showModal,basicPage,reactiveValues,
         modalDialog,modalButton, uiOutput, renderUI,removeModal,fluidRow,column,reactive,
-        tableOutput, renderTable, HTML],
+        tableOutput, renderTable, HTML,img],
   htmltools[tagList],lubridate,
   magrittr[`%>%`],dplyr,htmltools,
   reactable[reactableOutput, renderReactable, reactable], plotly[config,layout]
@@ -33,23 +33,28 @@ data2 <- shiny::reactiveFileReader(1000, NULL, "app/data/data2.rds", readRDS)
 #' @export
 ui <- function(id){
   ns <- NS(id)
-  tags$br()
-  tags$br()
-  tags$br()
   Stack(
-    tokens = list(childrenGap = 10), horizontal = TRUE,
-    cards$makeCard(div(class="text1",""
+    tokens = list(childrenGap = 10),
+    div(class="goback_img", 
+        div(img(src = "Shape.svg")),#horizontal = TRUE,
+    div(class="goback_link",
+      #style="font-weight: bold; margin-left: 6px",
+        shiny.fluent::Link(href="#!/compare", "Go back")
+        )),
+    tags$br(),
+    div(style="display: flex;",
+      cards$makeCard(div(class="text1",""
                        #Text("From ",shiny::textOutput(ns("date1")), "to ", shiny::textOutput(ns("date3")))
                        ),
                    div(uiOutput(ns("table1")))
                    ),
     div(class="margin_l"),
-    div(class="more_compare_page"),
+    div(class="line"),
     div(class="margin_r"),
     cards$makeCard(div(class="text1",""
     ),
     div( uiOutput(ns("table2")))) #overflow: auto #style="max-height: 400px;"
-  )
+  ))
 
 }
 

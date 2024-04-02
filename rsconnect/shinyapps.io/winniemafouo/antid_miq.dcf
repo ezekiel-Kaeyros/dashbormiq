@@ -5,7 +5,7 @@ account: winniemafouo
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11542145
-bundleId: 8396257
+bundleId: 8406504
 url: https://winniemafouo.shinyapps.io/antid_miq/
 version: 1
 asMultiple: FALSE

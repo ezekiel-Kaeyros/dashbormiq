@@ -147,26 +147,26 @@ server <- function(id) {
       date1_t <- shiny::reactiveFileReader(1000, NULL, "app/data/date1.rds", readRDS)
       date3_t <- shiny::reactiveFileReader(1000, NULL, "app/data/date3.rds", readRDS)
       choice_data <- shiny::reactiveFileReader(1000, NULL, "app/data/choice_data.rds", readRDS)
-      start_date <- as.Date(date1_t())
-      end_date <- as.Date(date3_t())
+      start_date <- as.Date(date1_t()) + 1
+      end_date <- as.Date(date3_t()) + 1
       data <- import_data$data %>%
-        dplyr::filter(report_date >= start_date & report_date <= end_date) %>%
+        dplyr::filter(createdAt >= start_date & createdAt <= end_date) %>%
         dplyr::select(choice_data())
       data <- as.data.frame(table(unlist(data)))
       data <- data %>%
         dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
                       pct1 = paste0(percentage, "%"))
-      if (choice_data() == "influence of the discrimination") {
-        data$Var1 <- gsub("Text \\(free entry\\)",
-                          "Others", data$Var1)
-        data
-      } else if (choice_data() == "another discriminations") {
-        data$Var1 <- gsub("Other form, namely",
-                          "Others", data$Var1)
-        data
-      } else {
-        data
-      }
+      # if (choice_data() == "influence of the discrimination") {
+      #   data$Var1 <- gsub("Text \\(free entry\\)",
+      #                     "Others", data$Var1)
+      #   data
+      # } else if (choice_data() == "another discriminations") {
+      #   data$Var1 <- gsub("Other form, namely",
+      #                     "Others", data$Var1)
+      #   data
+      # } else {
+      #   data
+      # }
 
     }) #,ignoreNULL = TRUE,ignoreInit = TRUE
     observe({
@@ -181,26 +181,26 @@ server <- function(id) {
       date2_t <- shiny::reactiveFileReader(1000, NULL, "app/data/date2.rds", readRDS)
       date4_t <- shiny::reactiveFileReader(1000, NULL, "app/data/date4.rds", readRDS)
       choice_data <- shiny::reactiveFileReader(1000, NULL, "app/data/choice_data.rds", readRDS)
-      start_date <- as.Date(date2_t())
-      end_date <- as.Date(date4_t())
+      start_date <- as.Date(date2_t()) + 1
+      end_date <- as.Date(date4_t()) +1
       data <- import_data$data %>%
-        dplyr::filter(report_date >= start_date & report_date <= end_date) %>%
+        dplyr::filter(createdAt >= start_date & createdAt <= end_date) %>%
         dplyr::select(choice_data())
       data <- as.data.frame(table(unlist(data)))
       data <- data %>%
         dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
                       pct1 = paste0(percentage, "%"))
-      if (choice_data() == "influence of the discrimination") {
-        data$Var1 <- gsub("Text \\(free entry\\)",
-                          "Others", data$Var1)
-        data
-      } else if (choice_data() == "another discriminations") {
-        data$Var1 <- gsub("Other form, namely",
-                          "Others", data$Var1)
-        data
-      } else {
-        data
-      }
+      # if (choice_data() == "influence of the discrimination") {
+      #   data$Var1 <- gsub("Text \\(free entry\\)",
+      #                     "Others", data$Var1)
+      #   data
+      # } else if (choice_data() == "another discriminations") {
+      #   data$Var1 <- gsub("Other form, namely",
+      #                     "Others", data$Var1)
+      #   data
+      # } else {
+      #   data
+      # }
 
     })
 
