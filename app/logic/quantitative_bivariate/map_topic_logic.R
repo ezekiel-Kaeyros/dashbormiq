@@ -8,10 +8,18 @@
 #   leaflet.minicharts[addMinicharts]
 # )
 # 
-# box::use(
-#   app/logic/import_data
-# )
-# 
+
+box::use(
+  app/logic/import_data
+)
+
+data <-import_data$data
+all <- expand.grid(Var1 = unlist(data$typeOfDiscrimination), Var2 = unlist(data$sexualOrientation))
+table_sex_disc <- as.data.frame(table(all))
+
+
+
+
 # data <- import_data$data
 # data1 <- import_data$data1
 # 

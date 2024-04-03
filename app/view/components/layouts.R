@@ -160,7 +160,7 @@ quantitative_bivariate_layout <- function(tl_card, bl_card,tr_card, br_card) {#m
 qualitative_layout <- function(card) {#mid_card
   div(class = "qualitative_page",
       div(
-        style = "float: right; margin-right: 230px",
+        style = "float: right; margin-top:15px; margin-right: 10px;",#margin-right: 230px
         shiny.fluent::Link(href="#!/wordcloud", "See Wordcloud",
                            style = "background-color: #fff; text-decoration:none; padding: 1em 1.5em;
                             text-align: center; border-color: #000; border-radius: 12px;
@@ -183,7 +183,7 @@ qualitative_layout <- function(card) {#mid_card
 wordcloud_layout <- function(card) {#mid_card
   div(class = "qualitative_page",
       div(
-        style = "float: right; margin-right: 280px",
+        style = "float: right; margin-top:15px; margin-right: 10px;", #margin-right: 280px
         shiny.fluent::Link(href="#!/qualitative", "See Qualitative",
                            style = "background-color: #2B8049; text-decoration:none; padding: 1em 1.5em;
                            justify-content: center; align-items: center; width: 250px; height: 56px;

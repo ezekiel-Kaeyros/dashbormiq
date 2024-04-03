@@ -5,8 +5,8 @@ box::use(
   keyring[key_set,key_get],
   shinymanager[create_db,set_labels],
   shiny.fluent[fluentPage], utils[write.csv],
-  shinyjs
-
+  shinyjs, lubridate,
+  reactable
 )
 
 box::use(
@@ -19,7 +19,8 @@ box::use(
   app/view/overview_page,
   app/view/wordcloud_page,
   app/view/quantitative_bivariate_page,
-  app/logic/export_data
+  app/logic/export_data,
+  app/logic/mongo_fetch
 )
 
 # credentials <- data.frame(
@@ -70,6 +71,19 @@ ui <- function(id) {
   #ns <- NS(id)
   fluentPage(
     shinyjs::useShinyjs(),
+    div(style = "float: right;  gap: 0.5rem; margin-top: 30px;",
+      shiny.fluent::DefaultButton.shinyInput("refresh", "Refresh data",
+                                           iconProps = list(iconName = "Refresh"),
+                                           style = "background-color: #fff; text-decoration:none; padding: 1em 1.5em;
+                            text-align: center; border-color: #000; border-radius: 12px;
+                            border: 1px solid black;
+                           color: #000; font-weight: bold;"
+                                           )),
+    # style =" float: right; margin-top: 30px; gap: 0.5rem; 
+    #                                        background-color: #fff; text-decoration:none; padding: 1em 1.5em;
+    #                                        text-align: center; border-color: #000; border-radius: 12px;
+    #                                        border: 1px solid black;
+    #                                        color: #000; font-weight: bold;"
     div(
       style = "visibility: hidden;",
       downloadButton("download", label = "", verify_fa=FALSE)
@@ -141,6 +155,16 @@ server <- function(id, input, output, session) {
       shinyjs::click("download")
     })
     #outputOptions (output, "download", suspendWhenHidden=FALSE)
-
+  
+    observeEvent(input$refresh, {
+      shinyjs::delay(1000, {
+        rm(list = ls())
+        cat("\f")
+        shinyjs::refresh()
+        shinyjs::runjs("history.go(0)")
+        app <- paste0(getwd(), "/app.R")
+        Sys.setFileTime(app, lubridate::now())
+      })
+    })
 }
 

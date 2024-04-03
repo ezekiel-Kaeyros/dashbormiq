@@ -57,11 +57,11 @@ server <- function(id) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_groupedbarplot(gender_disc_logic$table_gender_disc,"Gender","Discrimination")
+      functions$generate_groupedbarplot(gender_disc_logic$table_gender_disc,"Gender","Form of queerphobia")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_table(gender_disc_logic$table_gender_disc,"Gender", "Discrimination")
+      functions$generate_table(gender_disc_logic$table_gender_disc,"Gender", "Form of queerphobia")
     })
 
     observeEvent(input$toggleButton, {

@@ -26,7 +26,7 @@ ui <- function(id) {
     #h1(class = "quantitative_page__title", ""), #Quantitative statistics
     div(style="display: flex",
         h3("Filter by identity:"),
-        div(style="width: 200px",
+        div(style="width: 200px; margin-top: 15px",
           Dropdown.shinyInput(ns("filter"),
                               value = import_data$options_filter[[1]]$key,
                               options = import_data$options_filter

@@ -26,9 +26,43 @@ box::use(
 root <- getwd()
 path_data <- paste(root, "/", "data1", sep="")
 
+# library(mongolite)
+# library(tidyverse)
+
 connection_string = "mongodb+srv://miq-user:Wy1N4zclOtlnR64d@miq-db.ppexwp3.mongodb.net/miq-db"
+# Fonction pour rafraîchir les données depuis MongoDB
+# refresh_data <- function() {
+#   mongo_conn <- mongolite::mongo(collection="reports", db="miq-db", url=connection_string)
+#   mongo_data <- mongo_conn$find()
+#   mongo_data <- as.data.frame(mongo_data)
+#   return(mongo_data)
+# }
+# 
+# # Rafraîchir les données toutes les 5 secondes
+# refresh_interval <- 5  # en secondes
+# while(TRUE) {
+#   data <- refresh_data()
+#   #print(mongo_data)
+#   Sys.sleep(refresh_interval)
+# }
+
 data <- mongo_fetch$fetch_mongodb(connection_string = connection_string, collection = "reports", db="miq-db")
 
+
+################ CALL DATA IN THE DB WITH REACTIVE CONSUMER
+dataxl <- shiny::reactivePoll(1000, session = shiny::getDefaultReactiveDomain(),
+                            # This function returns the time that log_file was last modified
+                            checkFunc = function() {
+                              
+                            },
+                            # This function returns the content of log_file
+                            valueFunc = function() {
+                              mongo_fetch$fetch_mongodb(connection_string = connection_string, collection = "reports", db="miq-db")
+                            }
+)
+# shiny::observe({
+#   print(dataxl())
+# })
 #import geojson file for the map
 file.data1 <- paste(path_data, "/germany_states.geojson", sep="")
 geojson3 <-  rjson::fromJSON(file=file.data1)
