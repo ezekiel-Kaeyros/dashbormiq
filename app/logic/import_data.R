@@ -50,16 +50,16 @@ data <- mongo_fetch$fetch_mongodb(connection_string = connection_string, collect
 
 
 ################ CALL DATA IN THE DB WITH REACTIVE CONSUMER
-dataxl <- shiny::reactivePoll(1000, session = shiny::getDefaultReactiveDomain(),
-                            # This function returns the time that log_file was last modified
-                            checkFunc = function() {
-                              
-                            },
-                            # This function returns the content of log_file
-                            valueFunc = function() {
-                              mongo_fetch$fetch_mongodb(connection_string = connection_string, collection = "reports", db="miq-db")
-                            }
-)
+# dataxl <- shiny::reactivePoll(1000, session = shiny::getDefaultReactiveDomain(),
+#                             # This function returns the time that log_file was last modified
+#                             checkFunc = function() {
+# 
+#                             },
+#                             # This function returns the content of log_file
+#                             valueFunc = function() {
+#                               mongo_fetch$fetch_mongodb(connection_string = connection_string, collection = "reports", db="miq-db")
+#                             }
+# )
 # shiny::observe({
 #   print(dataxl())
 # })

@@ -10,16 +10,17 @@ box::use(
   app/view/components/ui/cards,
   app/logic/import_data,
   app/logic/quantitative/age_affected_person_logic,
-  app/logic/functions
+  app/logic/functions,
+  app/logic/quantitative/n_employee_logic
 )
 
 
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Age categories of affected persons",
+  cards$card_ui(shiny::textOutput(ns("title1")), #"Age categories of affected persons"
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "PieSingle")),
-                div(class = "card_content","Most affected age group :" ,
+                div(class = "card_content", shiny::textOutput(ns("title2")), #"Most affected age group :"
                     h3(class = "description",shiny::textOutput(ns("text"))), 
                     p(class = "subtitle", ),
                     # Graph goes here
@@ -35,6 +36,7 @@ server <- function(id, filter) {
     ns <- session$ns
     data_personage <- age_affected_person_logic$data_age(filter)
     data_personage1 <- age_affected_person_logic$data_age1(filter)
+    data_emp <- n_employee_logic$data_emp(filter)
     
     button_state <- reactiveVal(FALSE)
     
@@ -48,57 +50,76 @@ server <- function(id, filter) {
     })
     
     toggle <- reactiveValues(piechart = TRUE)
-    output$plot_personage <- renderUI({
-      if (toggle$piechart) {
-        plotlyOutput(ns("piechart"))
-      } else {
-        plotlyOutput(ns("barplot"))
-      }
-    })
     
-    output$barplot <- renderPlotly({
-      functions$generate_barplot(data_personage,"Age")
-    })
+    if (filter=="Eine Organisation/Institution")  {
+      output$plot_personage <- renderUI({
+        if (toggle$piechart) {
+          plotlyOutput(ns("piechart1"))
+        } else {
+          plotlyOutput(ns("barplot1"))
+        }
+      })
+      
+      output$barplot1 <- renderPlotly({
+        functions$generate_barplot(data_emp,"Number of employees")
+      })
+      
+      output$piechart1 <- renderPlotly({
+        functions$generate_piechart(data_emp,"Number of employees")
+      })
+    } else {
+      output$plot_personage <- renderUI({
+        if (toggle$piechart) {
+          plotlyOutput(ns("piechart"))
+        } else {
+          plotlyOutput(ns("barplot"))
+        }
+      })
+      
+      output$barplot <- renderPlotly({
+        functions$generate_barplot(data_personage,"Age")
+      })
+      
+      output$piechart <- renderPlotly({
+        functions$generate_piechart(data_personage,"Age")
+      })
+    }
     
-    output$piechart <- renderPlotly({
-      functions$generate_piechart(data_personage,"Age")
-    })
-    # output$barplot <- renderUI ({
-    #   if (filter=="An organization/institution") {
-    #     shiny::textOutput(ns("text1"))
-    #   } else {
-    #     plotly::plotlyOutput(ns("plot1"))
-    #   }
-    # })
-    # output$piechart <- renderUI ({
-    #   if (filter=="An organization/institution") {
-    #     shiny::textOutput(ns("text1"))
-    #   } else {
-    #     plotly::plotlyOutput(ns("plot2"))
-    #   }
-    # })
-    # output$text1 <- shiny::renderText({
-    #     paste("No data concerning age of the organization")
-    # })
-    # # output$text2 <- shiny::renderText({
-    # #   paste("No data concerning age of the organization")
-    # # })
-    # output$plot1 <- renderPlotly({
-    #     functions$generate_barplot(data_personage,"Age")
-    # })
-    # output$plot2 <- renderPlotly({
-    #   functions$generate_piechart(data_personage,"Age")
-    # })
-    # 
+    if (filter=="Eine Organisation/Institution") {
+      output$title1 <- shiny::renderText({
+        paste("Number of employees")
+      })
+    } else {
+      output$title1 <- shiny::renderText({
+        paste("Age of affected person")
+      })
+    }
+    
+    if (filter=="Eine Organisation/Institution") {
+      output$title2 <- shiny::renderText({
+        paste(" ")
+      })
+    } else {
+      output$title2 <- shiny::renderText({
+        paste("Most affected age group :")
+      })
+    }
+
     observeEvent(input$toggleButton, {
       toggle$piechart <- !toggle$piechart
     })
     
-    output$text <- shiny::renderText({
-      # max_index <- which.max(data_personage$Freq)
-      # data_personage[max_index, ]$Var1
-      names(table(data_personage1$age))[which.max(table(data_personage1$age))]
-    })
+    if (filter=="Eine Organisation/Institution") {
+      output$text <- shiny::renderText({
+        #nrow(data_emp)
+        paste("")
+      })
+    } else {
+      output$text <- shiny::renderText({
+        names(table(data_personage1$age))[which.max(table(data_personage1$age))]
+      })
+    }
+    
     
   })
 }

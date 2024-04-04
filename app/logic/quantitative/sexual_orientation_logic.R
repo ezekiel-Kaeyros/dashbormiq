@@ -16,7 +16,7 @@ data_sex <- function(filter){
   data_sex <- data_sex %>%
     dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),
                   pct1 = paste0(percentage, "%"))
-  data_sex <- subset(data_sex,Var1!="FALSE")
+  #data_sex <- subset(data_sex,Var1!="FALSE")
   
   return(data_sex)
 }

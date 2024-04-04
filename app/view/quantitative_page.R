@@ -23,42 +23,42 @@ ui <- function(id) {
   ns <- NS(id)
   shinyjs::useShinyjs()
   layouts$quantitative_page_layout(div(class = "head_section",
-    #h1(class = "quantitative_page__title", ""), #Quantitative statistics
-    div(style="display: flex",
-        h3("Filter by identity:"),
-        div(style="width: 200px; margin-top: 15px",
-          Dropdown.shinyInput(ns("filter"),
-                              value = import_data$options_filter[[1]]$key,
-                              options = import_data$options_filter
-                           ))
-        ),
-    div( style = "float: right;  gap: 0.5rem;",
-      shiny.fluent::Link(href="#!/quantitative_bivariate", "Go to Bivariate",
-                         style = "background-color: #fff; text-decoration:none; padding: 1em 1.5em;
+                                       #h1(class = "quantitative_page__title", ""), #Quantitative statistics
+                                       div(style="display: flex",
+                                           h3("Filter by identity:"),
+                                           div(style="width: 200px; margin-top: 15px",
+                                               Dropdown.shinyInput(ns("filter"),
+                                                                   value = import_data$options_filter[[1]]$key,
+                                                                   options = import_data$options_filter
+                                               ))
+                                       ),
+                                       div( style = "float: right;  gap: 0.5rem;",
+                                            shiny.fluent::Link(href="#!/quantitative_bivariate", "Go to Bivariate",
+                                                               style = "background-color: #fff; text-decoration:none; padding: 1em 1.5em;
                         text-align: center; border-color: #000; border-radius: 12px;
                         border: 1px solid black;
                        color: #000; font-weight: bold;"),
-      shiny.fluent::DefaultButton.shinyInput("export_quantitative", "Export data",
-                                             iconProps = list(iconName = "Download"))
-
-    ),
-    ),
-    
-    affected_person$ui(ns("affected_person")), 
-    #shiny::conditionalPanel("input.filter!='An organization/institution'", age_of_affected_person$ui(ns("age_of_affected_person"))),
-    age_of_affected_person$ui(ns("age_of_affected_person")),
-    previous_measures$ui(ns("previous_measures")),
-    map$ui(ns("map")),location_f$ui(ns("location_f")),
-    sexual_orientation$ui(ns("sexual_orientation")),
-    gender_identity$ui(ns("gender_identity")),
-    date_of_occurance$ui(ns("date_of_occurance")), 
-    influence_discrimination$ui(ns("influence_discrimination"))) #,location$ui(ns("location"))
+                                            shiny.fluent::DefaultButton.shinyInput("export_quantitative", "Export data",
+                                                                                   iconProps = list(iconName = "Download"))
+                                            
+                                       ),
+  ),
+  
+  affected_person$ui(ns("affected_person")), 
+  #shiny::conditionalPanel("input.filter!='An organization/institution'", age_of_affected_person$ui(ns("age_of_affected_person"))),
+  age_of_affected_person$ui(ns("age_of_affected_person")),
+  previous_measures$ui(ns("previous_measures")),
+  map$ui(ns("map")),location_f$ui(ns("location_f")),
+  sexual_orientation$ui(ns("sexual_orientation")),
+  gender_identity$ui(ns("gender_identity")),
+  date_of_occurance$ui(ns("date_of_occurance")), 
+  influence_discrimination$ui(ns("influence_discrimination"))) #,location$ui(ns("location"))
 }
 
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-
+    
     ns <- session$ns
     shiny::observeEvent(input$filter, {
       affected_person$server("affected_person", input$filter)
