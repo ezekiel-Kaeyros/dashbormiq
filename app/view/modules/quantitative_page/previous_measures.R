@@ -16,10 +16,10 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Previous measures taken",#"",
+  cards$card_ui("Bereits ergriffene Maßnahmen",#"",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "description", "Most previous measure taken :"),
+                    h3(class = "description", "Die meisten bisher getroffenen Maßnahmen :"),
                     p(class = "subtitle", shiny::textOutput(ns("text"))), #a refaire
                     
                     # Graph goes here
@@ -55,11 +55,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_barplot(previous_measures_f,"Action")
+      functions$generate_barplot(previous_measures_f,"Aktion")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(previous_measures_f,"Action")
+      functions$generate_piechart(previous_measures_f,"Aktion")
     })
 
     observeEvent(input$toggleButton, {

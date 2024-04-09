@@ -19,7 +19,7 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Frequency of Different Forms of Discrimination by Age Group",
+  cards$card_ui("Häufigkeit der verschiedenen Formen von Queerphobie nach Altersgruppe",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "table")),
                 div(class = "card_content",
                     # Graph goes here
@@ -57,11 +57,11 @@ server <- function(id) {
     })
     # 
     output$barplot <- renderPlotly({
-      functions$generate_groupedbarplot(age_disc_logic$table_age_disc,"Age group","Discrimination")
+      functions$generate_groupedbarplot(age_disc_logic$table_age_disc,"Altersgruppe","Form der Queerphobie")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_table(age_disc_logic$table_age_disc,"Age group", "Discrimination")
+      functions$generate_table(age_disc_logic$table_age_disc,"Altersgruppe", "Form der Queerphobie")
     })
 
     observeEvent(input$toggleButton, {

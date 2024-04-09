@@ -16,7 +16,7 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   #leafletOutput("map_plot")
-  cards$card_ui("Map of Persons Affected by Province",
+  cards$card_ui("Karte der betroffenen Personen nach Bundesländern",
                 "",
                 div(class = "card_content",
                     h1(class = "subtitle", ""),
@@ -29,11 +29,11 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id) {
+server <- function(id,filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$map_plot <- renderLeaflet({
-     map_logic$map
+     map_logic$map(filter)
     })
 
   })

@@ -14,7 +14,8 @@ box::use(
 )
 
 data <-import_data$data
-all <- expand.grid(Var1 = unlist(data$typeOfDiscrimination), Var2 = unlist(data$sexualOrientation))
+data <- subset(data,gender!="FALSE")
+all <- expand.grid(Var1 = unlist(data$gender), Var2 = unlist(data$typeOfDiscrimination))
 table_sex_disc <- as.data.frame(table(all))
 
 

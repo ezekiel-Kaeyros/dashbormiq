@@ -18,10 +18,10 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Location",
+  cards$card_ui("Standort",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "description", "Most common place :"),
+                    h3(class = "description", "Häufigster Ort :"),
                     p(class = "subtitle", shiny::textOutput(ns("text"))),
                     
                     # Graph goes here
@@ -37,7 +37,7 @@ server <- function(id, filter) {
     ns <- session$ns
     data_onreal <- location_logic$data_onreal(filter)
     data_onreal1 <- location_logic$data_onreal1(filter)
-    #output$plot_personaf <- render
+    
     button_state <- reactiveVal(FALSE)
 
     observeEvent(input$toggleButton, {
@@ -59,11 +59,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({ 
-      functions$generate_barplot(data_onreal,"Location")
+      functions$generate_barplot(data_onreal,"Standort")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_onreal,"Location")
+      functions$generate_piechart(data_onreal,"Standort")
     })
 
     observeEvent(input$toggleButton, {

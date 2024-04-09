@@ -18,10 +18,10 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Foundation of the discrimination",
+  cards$card_ui("Grundlage der Diskriminierung",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "description", "Reccurent foundation of discrimation :"),
+                    h3(class = "description", "Ursprüngliche Grundlage der Diskriminierung :"),
                     p(class = "subtitle", shiny::textOutput(ns("text"))),
                     
                     # Graph goes here
@@ -59,11 +59,11 @@ server <- function(id, filter) {
     })
     
     output$barplot <- renderPlotly({
-      functions$generate_barplot(influence_discrimination,"Base of the discrimination")
+      functions$generate_barplot(influence_discrimination,"Grundlage der Diskriminierung")
     })
     
     output$piechart <- renderPlotly({
-      functions$generate_piechart(influence_discrimination,"Base of the discrimination")
+      functions$generate_piechart(influence_discrimination,"Grundlage der Diskriminierung")
     })
     
     observeEvent(input$toggleButton, {

@@ -61,11 +61,11 @@ server <- function(id, filter) {
       })
       
       output$barplot1 <- renderPlotly({
-        functions$generate_barplot(data_emp,"Number of employees")
+        functions$generate_barplot(data_emp,"Anzahl der Mitarbeiter")
       })
       
       output$piechart1 <- renderPlotly({
-        functions$generate_piechart(data_emp,"Number of employees")
+        functions$generate_piechart(data_emp,"Anzahl der Mitarbeiter")
       })
     } else {
       output$plot_personage <- renderUI({
@@ -77,21 +77,21 @@ server <- function(id, filter) {
       })
       
       output$barplot <- renderPlotly({
-        functions$generate_barplot(data_personage,"Age")
+        functions$generate_barplot(data_personage,"Alter")
       })
       
       output$piechart <- renderPlotly({
-        functions$generate_piechart(data_personage,"Age")
+        functions$generate_piechart(data_personage,"Alter")
       })
     }
     
     if (filter=="Eine Organisation/Institution") {
       output$title1 <- shiny::renderText({
-        paste("Number of employees")
+        paste("Anzahl der Mitarbeiter")
       })
     } else {
       output$title1 <- shiny::renderText({
-        paste("Age of affected person")
+        paste("Alterskategorie der betroffenen Person")
       })
     }
     
@@ -101,7 +101,7 @@ server <- function(id, filter) {
       })
     } else {
       output$title2 <- shiny::renderText({
-        paste("Most affected age group :")
+        paste("Am meisten betroffene Altersgruppe :")
       })
     }
 

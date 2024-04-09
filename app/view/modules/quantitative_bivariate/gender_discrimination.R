@@ -19,7 +19,7 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Frequency of Different Forms of queerphobia by Gender",
+  cards$card_ui("Häufigkeit der verschiedenen Formen von Queerphobie nach Geschlecht",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     # Graph goes here
@@ -57,11 +57,11 @@ server <- function(id) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_groupedbarplot(gender_disc_logic$table_gender_disc,"Gender","Form of queerphobia")
+      functions$generate_groupedbarplot(gender_disc_logic$table_gender_disc,"Geschlecht","Form der Queerphobie")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_table(gender_disc_logic$table_gender_disc,"Gender", "Form of queerphobia")
+      functions$generate_table(gender_disc_logic$table_gender_disc,"Geschlecht", "Form der Queerphobie")
     })
 
     observeEvent(input$toggleButton, {

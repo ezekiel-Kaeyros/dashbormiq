@@ -20,11 +20,11 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   shinyjs::useShinyjs()
-  cards$card_ui("Affected Person",
+  cards$card_ui("Betroffene Person",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "description", "Number of affected people :"),
-                  p(class = "subtitle", shiny::textOutput(ns("subtitle")) ), #nrow(unique(import_data$data))
+                    h3(class = "description", "Anzahl der betroffenen Personen :"),
+                    p(class = "subtitle", shiny::textOutput(ns("subtitle")) ), #nrow(unique(import_data$data))
                   
                   # Graph goes here
                   uiOutput(ns("plot_personaf"))
@@ -64,11 +64,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_barplot(data_personaf,"Person affected")
+      functions$generate_barplot(data_personaf,"Betroffene Person")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_personaf,"Person affected")
+      functions$generate_piechart(data_personaf,"Betroffene Person")
     })
 
     observeEvent(input$toggleButton, {

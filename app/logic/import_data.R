@@ -124,7 +124,7 @@ data1 <- sf::st_as_sf(data1)
 ############### to display select input Compare page #########
 key_var <- c("identity", "gender",
              "typeOfDiscrimination", "age", "locationOnline","organizationType","numberOfEmployees",
-             "formOfDisc", "formOfDiscYes","haveYouReported","haveYouReportedYes","formofQueerphobia")
+             "formOfDisc", "formOfDiscYes","haveYouReported","haveYouReportedYes","formOfQueerphobia")
 
 
 options_var <- lapply(seq_along(key_var), function(i) {

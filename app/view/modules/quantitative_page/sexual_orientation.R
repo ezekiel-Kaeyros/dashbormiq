@@ -18,10 +18,10 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Sexual orientation",
+  cards$card_ui("Sexuelle Orientierung",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "PieSingle")),
                 div(class = "card_content",
-                    h3(class = "description", "Reccurent sexual orientation :"),
+                    h3(class = "description", "Die sexuelle Orientierung des Betreffenden :"),
                     p(class = "subtitle", shiny::textOutput(ns("text"))),
                     
                     # Graph goes here
@@ -37,8 +37,7 @@ server <- function(id, filter) {
     ns <- session$ns
     data_sex <- sexual_orientation_logic$data_sex(filter)
     data_sex1 <- sexual_orientation_logic$data_sex1(filter)
-    #ns <- NS(id)
-    #output$plot_personaf <- render
+    
     button_state <- reactiveVal(FALSE)
     
     observeEvent(input$toggleButton, {
@@ -60,11 +59,11 @@ server <- function(id, filter) {
     })
     
     output$barplot <- renderPlotly({
-      functions$generate_barplot(data_sex,"Sexual orientation")
+      functions$generate_barplot(data_sex,"Sexuelle Orientierung")
     })
     
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_sex,"Sexual orientation")
+      functions$generate_piechart(data_sex,"Sexuelle Orientierung")
     })
     
     observeEvent(input$toggleButton, {

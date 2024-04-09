@@ -23,7 +23,7 @@ data_temp <- function(filter){
     dplyr::mutate(
       temporal_distance = if_else(temporal_distance < 0, 0,temporal_distance)
     )
-  
+  data_temp <- subset(data_temp, !is.na(data_temp$temporal_distance))
   data_months <- data_temp %>%
     dplyr::mutate(
       Var1 = cut(temporal_distance,breaks = c(-Inf,30,60,Inf),
@@ -34,7 +34,7 @@ data_temp <- function(filter){
     dplyr::summarise(Freq = n()) %>%
     dplyr::mutate(percentage=round(100*(Freq/sum(Freq)),2),
                   pct1=paste0(percentage,"%"))
-  data_months <- stats::na.omit(data_months)
+  #data_months <- stats::na.omit(data_months)
   return(data_months)
 }
 

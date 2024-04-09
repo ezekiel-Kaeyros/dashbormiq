@@ -1,4 +1,5 @@
-Sys.setlocale("LC_ALL","English")
+#Sys.setlocale("LC_ALL","English")
+Sys.setlocale("LC_ALL","German.UTF-8")
 box::use(
   shiny.fluent[Text, fluentPage, reactOutput, renderReact, Dialog, JS,
                DialogFooter, PrimaryButton.shinyInput, DefaultButton.shinyInput,
@@ -39,7 +40,7 @@ ui <- function(id){
         div(img(src = "Shape.svg")),#horizontal = TRUE,
     div(class="goback_link",
       #style="font-weight: bold; margin-left: 6px",
-        shiny.fluent::Link(href="#!/compare", "Go back")
+        shiny.fluent::Link(href="#!/compare", "Zurückgehen")
         )),
     tags$br(),
     div(style="display: flex;",
@@ -65,7 +66,7 @@ server <- function(id) {
     ns <- session$ns
 
     output$date1 <- shiny::renderText({
-      date <- as.Date(date1()) + 1
+      date <- as.Date(date1())
       format(lubridate::ymd(date),"%d %B %Y")
     })
 
@@ -74,7 +75,7 @@ server <- function(id) {
     })
 
     output$date2 <- shiny::renderText({
-      date <- as.Date(date2()) + 1
+      date <- as.Date(date2())
       format(lubridate::ymd(date),"%d %B %Y")
     })
 
@@ -83,7 +84,7 @@ server <- function(id) {
     })
 
     output$date3 <- shiny::renderText({
-      date <- as.Date(date3()) + 1
+      date <- as.Date(date3())
       format(lubridate::ymd(date),"%d %B %Y")
     })
 
@@ -92,7 +93,7 @@ server <- function(id) {
     })
 
     output$date4 <- shiny::renderText({
-      date <- as.Date(date4()) + 1
+      date <- as.Date(date4())
       format(lubridate::ymd(date),"%d %B %Y")
     })
 
@@ -114,7 +115,7 @@ server <- function(id) {
     })
 
     output$text1 <- shiny::renderText({
-      paste("There's no data for this period")
+      paste("Es gibt keine Daten für diesen Zeitraum")
     })
    
     output$plot1 <- plotly::renderPlotly({
@@ -128,7 +129,7 @@ server <- function(id) {
                         "Number of persons :", data()$Freq,
                         "<br>Percentage :",data()$pct1), #) %>%
                       hoverinfo = 'text') %>%
-        layout(title = paste("From",format(lubridate::ymd(as.Date(date1())),"%d %B %Y") , "to", format(lubridate::ymd(as.Date(date3())),"%d %B %Y")),
+        layout(title = paste("Von",format(lubridate::ymd(as.Date(date1())),"%d %B %Y") , "bis", format(lubridate::ymd(as.Date(date3())),"%d %B %Y")),
                uniformtext=list(minsize=10, mode='show'),
                xaxis = list(title = "<b> </b>", #font = list(size = 0),
                             # change x-axix size
@@ -159,7 +160,7 @@ server <- function(id) {
     })
 
     output$text2 <- shiny::renderText({
-      paste("There's no data for this period")
+      paste("Es gibt keine Daten für diesen Zeitraum")
     })
 
     output$plot2 <- plotly::renderPlotly({
@@ -173,7 +174,7 @@ server <- function(id) {
                         "Number of persons :", data2()$Freq,
                         "<br>Percentage :",data2()$pct1), #) %>%
                       hoverinfo = 'text') %>%
-        layout(title = paste("From",format(lubridate::ymd(as.Date(date2())),"%d %B %Y") , "to", format(lubridate::ymd(as.Date(date4())),"%d %B %Y"))  ,
+        layout(title = paste("Von",format(lubridate::ymd(as.Date(date2())),"%d %B %Y") , "bis", format(lubridate::ymd(as.Date(date4())),"%d %B %Y"))  ,
                uniformtext=list(minsize=10, mode='show'),
                xaxis = list(title = "<b> </b>", #font = list(size = 0),
                             # change x-axix size

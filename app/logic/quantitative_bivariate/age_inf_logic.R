@@ -4,7 +4,6 @@ box::use(
 
 data <- import_data$data
 
-#influence_list <- unlist(data$influence_of_the_discrimination)
 # Créer un data frame avec les informations des groupes d'âge et les types d'Var2
 data_age_inf <- data.frame(Var1 = character(),
                            Var2 = character(),

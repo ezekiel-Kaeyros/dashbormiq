@@ -18,10 +18,10 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui("Temporal distance between occurance and report",
+  cards$card_ui("Zeitlicher Abstand zwischen Vorkommnis und Meldung",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
-                    h3(class = "description", "Modal temporal distance :"),
+                    h3(class = "description", "Modaler zeitlicher Abstand :"),
                     p(class = "subtitle", shiny::textOutput(ns("text"))),
                     
                     # Graph goes here
@@ -59,11 +59,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_barplot(data_months,"Time")
+      functions$generate_barplot(data_months,"Zeit")
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_months,"Time")
+      functions$generate_piechart(data_months,"Zeit")
     })
 
     observeEvent(input$toggleButton, {

@@ -30,7 +30,7 @@ ui <- function(id) {
   #                   shiny::uiOutput(ns("plot_date"))#450
   #               )
   # )
-  cards$card_ui("Frequency of Different Forms of queerphobia by Gender",
+  cards$card_ui("Häufigkeit der verschiedenen Arten von Diskriminierung nach Geschlecht",
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "BarChart4")),
                 div(class = "card_content",
                     # Graph goes here
@@ -67,11 +67,11 @@ server <- function(id) {
     })
     
     output$barplot <- renderPlotly({
-      functions$generate_groupedbarplot(map_topic_logic$table_sex_disc,"Type of discrimination","Sexual orientation")
+      functions$generate_groupedbarplot(map_topic_logic$table_sex_disc,"Geschlecht","Sexuelle Orientierung")
     })
     
     output$piechart <- renderPlotly({
-      functions$generate_table(map_topic_logic$table_sex_disc,"Type of discrimination","Sexual orientation")
+      functions$generate_table(map_topic_logic$table_sex_disc,"Geschlecht","Sexuelle Orientierung")
     })
     
     observeEvent(input$toggleButton, {

@@ -31,13 +31,11 @@ ui <- function(id){
           div(class= "compare_page2",
               tagList(
                 #shinyjs::useShinyjs(),
-                h3("Choose to compare"),
-                paste("Click to choose variable"),
+                h3("Vergleichen auswählen"),
+                paste("Variable auswählen (klicken)"),
                 tags$br(),
-                DefaultButton.shinyInput(ns("showmodal"), text = "Choose",styles = list("background: ##F0FFF0")),
+                DefaultButton.shinyInput(ns("showmodal"), text = "Wählen",styles = list("background: ##F0FFF0")),
                 reactOutput(ns("modal"))
-                #reactOutput(ns("modal")),
-                #reactOutput(ns("page_ok"))
               )
           )
       )
@@ -57,31 +55,31 @@ server <- function(id) {
       Modal(isOpen = modalVisible(),
             Stack(tokens = list(padding = "15px", childrenGap = "10px"),
                   div(style = list(display = "flex"),
-                      Text("Choose inputs to compare data", variant = "large"),
+                      Text("Eingaben für den Datenvergleich auswählen", variant = "large"),
                       div(style = list(flexGrow = 1))
                   ),
                   div(
-                    h5("Choose variable"),
+                    h5("Variable wählen"),
                     Dropdown.shinyInput(ns("choice_data"), value = import_data$options_var[[1]]$key, options = import_data$options_var),
                     tags$br(),
                     div(class="periods",
-                        h5("First period"),
-                        h5(class = "period_right", "Second period")
+                        h5("Erste Periode"),
+                        h5(class = "period_right", "Zweite Periode")
                         # style = "display:flex; justify-content:space-around; padding:0px 10px;",
                         # h5("First period"),
                         # h5("Second period")
                     ),
                     div(
                       style = "display: flex; flex-direction: row; justify-content: space-between; column-gap:30px;",
-                      DatePicker.shinyInput(ns("date1"), value = NULL, placeholder = "Start date"),
-                      DatePicker.shinyInput(ns("date2"), value = NULL, placeholder = "Start date")
+                      DatePicker.shinyInput(ns("date1"), value = NULL, placeholder = "Startdatum"),
+                      DatePicker.shinyInput(ns("date2"), value = NULL, placeholder = "Startdatum")
                     ),
                     tags$br(),
                     div(
                       style = "display: flex; flex-direction: row; justify-content: space-between;
                       column-gap:8px;",
-                      DatePicker.shinyInput(ns("date3"), value = NULL, placeholder = "End date"),
-                      DatePicker.shinyInput(ns("date4"), value = NULL, placeholder = "End date")
+                      DatePicker.shinyInput(ns("date3"), value = NULL, placeholder = "Enddatum"),
+                      DatePicker.shinyInput(ns("date4"), value = NULL, placeholder = "Enddatum")
                     ),
                     tags$br(),
                     tags$br(),
@@ -89,7 +87,7 @@ server <- function(id) {
                       style = "display: flex; justify-content: flex-end;",
                       div(
                         style = "margin-right: 10px;",
-                        DefaultButton.shinyInput(ns("cancel"), "Cancel")
+                        DefaultButton.shinyInput(ns("cancel"), "Abbrechen")
                       ),
                       div(
                         shinyjs::useShinyjs(),

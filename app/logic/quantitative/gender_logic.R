@@ -12,6 +12,7 @@ data_gender <- function(filter){
   } else {
     data <- subset(import_data$data, identity==filter)
   }
+  data <- subset(data, gender!="FALSE")
   data_gen <- as.data.frame(table(unlist(data$gender)))
   data_gen <- data_gen %>%
     dplyr::mutate(percentage = round(100*(Freq/sum(Freq)),2),

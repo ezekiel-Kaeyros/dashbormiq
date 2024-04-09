@@ -62,11 +62,11 @@ server <- function(id, filter) {
       })
       
       output$barplot1 <- renderPlotly({
-        functions$generate_barplot(data_type,"Type")
+        functions$generate_barplot(data_type,"Typ")
       })
       
       output$piechart1 <- renderPlotly({
-        functions$generate_piechart(data_type,"Type")
+        functions$generate_piechart(data_type,"Typ")
       })
     } else {
       output$plot_persongen <- renderUI({
@@ -78,31 +78,31 @@ server <- function(id, filter) {
       })
       
       output$barplot <- renderPlotly({
-        functions$generate_barplot(data_gender,"Gender")
+        functions$generate_barplot(data_gender,"Geschlecht")
       })
       
       output$piechart <- renderPlotly({
-        functions$generate_piechart(data_gender,"Gender")
+        functions$generate_piechart(data_gender,"Geschlecht")
       })
     }
     
     if (filter=="Eine Organisation/Institution") {
       output$title1 <- shiny::renderText({
-        paste("Organization type")
+        paste("Organisationstyp")
       })
     } else {
       output$title1 <- shiny::renderText({
-        paste("Gender identity")
+        paste("Geschlechtsidentität")
       })
     }
     
     if (filter=="Eine Organisation/Institution") {
       output$title2 <- shiny::renderText({
-        paste("Different types of organization :")
+        paste("Verschiedene Arten von Organisationen :")
       })
     } else {
       output$title2 <- shiny::renderText({
-        paste("Differents genders: ")
+        paste("Unterschiedliche Geschlechter :")
       })
     }
     
@@ -112,7 +112,7 @@ server <- function(id, filter) {
     
     if (filter!="Eine Organisation/Institution"){
       output$subtitle <- shiny::renderText({
-        length(unique(unlist(import_data$data$gender)))
+        dim(data_gender)[1]
         #nrow(data_gender)
       })
     } else {

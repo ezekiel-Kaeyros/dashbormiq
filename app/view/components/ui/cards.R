@@ -92,7 +92,7 @@ card_comapre_ui <- function(title, actionBtn ,content) {
 makeCard <- function(title, content, size = 12, style = "") {
   div(
     class = glue("card ms-depth-8 ms-sm{size} ms-xl{size}"),
-    style = style,
+    style = "width:600px; height: 400px;",
     Stack(
       tokens = list(childrenGap = 5),
       Text(variant = "large", title, block = TRUE),
