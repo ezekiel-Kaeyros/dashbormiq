@@ -1,6 +1,8 @@
 box::use(
   shiny.fluent[Text, fluentPage,Dropdown.shinyInput],
   shiny[div, tags, NS, moduleServer, tagList,h1,h3],
+  shiny.router, lubridate,
+  jose, openssl
 )
 
 box::use(
@@ -22,31 +24,7 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   shinyjs::useShinyjs()
-  shiny::tagList(
-    div(class = "head_section",
-        #h1(class = "quantitative_page__title", ""), #Quantitative statistics
-        div(style="display: flex",
-            h3("Nach Identität filtern :"),
-            div(style="width: 200px; margin-top: 15px",
-                Dropdown.shinyInput(ns("filter"),
-                                    value = import_data$options_filter[[1]]$key,
-                                    defaultSelectedKeys = "A",
-                                    options = import_data$options_filter
-                ))
-        ),
-        div( style = "float: right;  gap: 0.5rem;",
-             shiny.fluent::Link(href="#!/quantitative_bivariate", "Weiter zu Bivariate",
-                                style = "background-color: #fff; text-decoration:none; padding: 1em 1.5em;
-                        text-align: center; border-color: #000; border-radius: 12px;
-                        border: 1px solid black;
-                       color: #000; font-weight: bold;"),
-             shiny.fluent::DefaultButton.shinyInput("export_quantitative", "Daten exportieren",
-                                                    iconProps = list(iconName = "Download"))
-             
-        ),
-    ),
-    shiny::uiOutput(ns("quantitive_page"))
-  )
+  shiny::uiOutput(ns("ui"))
 
 }
 
@@ -54,6 +32,64 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    
+    ################### GET the token variable in link
+    current_token <- shiny::reactive({
+      token <- shiny.router::get_query_param("token", session)
+      if(is.null(token)){
+        token <- "404"
+      }else{
+        token <- token 
+      }
+      token
+    })
+    
+    output$ui <- shiny::renderUI({
+      ############# Decode JWT
+      token_json_data <- jose::jwt_decode_hmac(current_token(), secret = import_data$key)
+
+      ############ Detect validity time of token
+      converted_time <- as.POSIXct(token_json_data$exp, origin="1970-01-01", tz="Africa/Lagos")
+      
+      if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & converted_time > Sys.time()){
+        shiny::tagList(
+          div(class = "head_section",
+              #h1(class = "quantitative_page__title", ""), #Quantitative statistics
+              div(style="display: flex",
+                  h3("Nach Identität filtern :"),
+                  div(style="width: 200px; margin-top: 15px",
+                      Dropdown.shinyInput(ns("filter"),
+                                          value = import_data$options_filter[[1]]$key,
+                                          defaultSelectedKeys = "A",
+                                          options = import_data$options_filter
+                      ))
+              ),
+              div( style = "float: right; display: flex;  gap: 0.5rem;",
+                   shiny.fluent::Link(href=paste("#!/quantitative_bivariate?token=", current_token(), sep = ""),
+                                      "Weiter zu Bivariate",
+                                      style = "background-color: #fff; text-decoration:none; padding: 1.5em 1.5em;
+                        border-color: #000; border-radius: 12px; display: flex;
+                        border: 1px solid black; color: #000; font-weight: bold;"),
+                   shiny.fluent::DefaultButton.shinyInput("export_quantitative", "Daten exportieren",
+                                                          iconProps = list(iconName = "Download"),
+                                                          style = "float: right;")
+                   
+              ),
+              div(style = "float: right;  gap: 0.5rem; margin-top: 28px;",
+                  shiny.fluent::DefaultButton.shinyInput("refresh", "Daten aktualisieren",
+                                                         iconProps = list(iconName = "Refresh"),
+                                                         style = "background-color: #fff; text-decoration:none; padding: 1em 1.5em;
+                            text-align: center; border-color: #000; border-radius: 12px; height:45px;
+                            border: 1px solid black;
+                           color: #000; font-weight: bold;"
+                  ))
+          ),
+          shiny::uiOutput(ns("quantitive_page"))
+        )
+      } else{
+        shiny::h3("Error 500 - Internal Server Error")
+      }
+    })
     
     output$quantitive_page <- shiny::renderUI({
       
