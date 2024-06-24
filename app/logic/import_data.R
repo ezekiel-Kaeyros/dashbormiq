@@ -29,19 +29,19 @@ path_data <- paste(root, "/", "data1", sep="")
 # library(mongolite)
 # library(tidyverse)
 
+############## Connection to database
 connection_string = "mongodb+srv://miq-user:Wy1N4zclOtlnR64d@miq-db.ppexwp3.mongodb.net/miq-db"
-
-############## Fetch login data
-connection_data_login = "mongodb+srv://miq-user:Wy1N4zclOtlnR64d@miq-db.ppexwp3.mongodb.net/miq-db"
 
 ################## Secret Key
 key <- "Anti-D-2024"
 ################# define viewer role
 role <- 2
 
+############## Fetch reports datas
 data <- mongo_fetch$fetch_mongodb(connection_string = connection_string, collection = "reports", db="miq-db")
 
-login_data <- mongo_fetch$fetch_mongodb(connection_string = connection_data_login, collection = "users", db="miq-db")
+############## Fetch login datas
+login_data <- mongo_fetch$fetch_mongodb(connection_string = connection_string, collection = "users", db="miq-db")
 
 #import geojson file for the map
 file.data1 <- paste(path_data, "/germany_states.geojson", sep="")

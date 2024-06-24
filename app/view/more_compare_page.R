@@ -21,6 +21,9 @@ box::use(
   app/view/components/ui/cards
 
 )
+box::use(
+  app/logic/import_data
+)
 
 date1 <- shiny::reactiveFileReader(1000, NULL, "app/data/date1.rds", readRDS)
 date2 <- shiny::reactiveFileReader(1000, NULL, "app/data/date2.rds", readRDS)
@@ -34,29 +37,7 @@ data2 <- shiny::reactiveFileReader(1000, NULL, "app/data/data2.rds", readRDS)
 #' @export
 ui <- function(id){
   ns <- NS(id)
-  Stack(
-    tokens = list(childrenGap = 10),
-    div(class="goback_img", 
-        div(img(src = "Shape.svg")),#horizontal = TRUE,
-    div(class="goback_link",
-      #style="font-weight: bold; margin-left: 6px",
-        shiny.fluent::Link(href="#!/compare", "Zurückgehen")
-        )),
-    tags$br(),
-    div(style="display: flex;",
-      cards$makeCard(div(class="text1",""
-                       #Text("From ",shiny::textOutput(ns("date1")), "to ", shiny::textOutput(ns("date3")))
-                       ),
-                   div(uiOutput(ns("table1")))
-                   ),
-    div(class="margin_l"),
-    div(class="line"),
-    div(class="margin_r"),
-    cards$makeCard(div(class="text1",""
-    ),
-    div( uiOutput(ns("table2")))) #overflow: auto #style="max-height: 400px;"
-  ))
-
+  shiny::uiOutput(ns("ui"))
 }
 
 
@@ -64,6 +45,53 @@ ui <- function(id){
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    
+    current_token <- shiny::reactive({
+      token <- shiny.router::get_query_param("token", session)
+      if(is.null(token)){
+        token <- "404"
+      }else{
+        token <- token 
+      }
+      token
+    })
+    
+    output$ui <- shiny::renderUI({
+      ############# Decode JWT
+      token_json_data <- jose::jwt_decode_hmac(current_token(), secret = import_data$key)
+      
+      ############ Detect validity time of token
+      converted_time <- as.POSIXct(token_json_data$exp, origin="1970-01-01", tz="Africa/Lagos")
+      
+      if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
+         converted_time > Sys.time()){
+        Stack(
+          tokens = list(childrenGap = 10),
+          div(class="goback_img", 
+              div(img(src = "Shape.svg")),#horizontal = TRUE,
+              div(class="goback_link",
+                  #style="font-weight: bold; margin-left: 6px",
+                  shiny.fluent::Link(href=paste("#!/compare?token=", current_token(), sep = ""), "Zurückgehen")
+              )),
+          tags$br(),
+          div(style="display: flex;",
+              cards$makeCard(div(class="text1",""
+                                 #Text("From ",shiny::textOutput(ns("date1")), "to ", shiny::textOutput(ns("date3")))
+              ),
+              div(uiOutput(ns("table1")))
+              ),
+              div(class="margin_l"),
+              div(class="line"),
+              div(class="margin_r"),
+              cards$makeCard(div(class="text1",""
+              ),
+              div( uiOutput(ns("table2")))) #overflow: auto #style="max-height: 400px;"
+          ))
+        
+      } else{
+        shiny::h3("Error 500 - Internal Server Error")
+      }
+    })
 
     output$date1 <- shiny::renderText({
       date <- as.Date(date1())

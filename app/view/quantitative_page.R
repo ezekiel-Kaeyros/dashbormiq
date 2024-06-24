@@ -39,7 +39,7 @@ server <- function(id) {
       if(is.null(token)){
         token <- "404"
       }else{
-        token <- token 
+        token <- token
       }
       token
     })
