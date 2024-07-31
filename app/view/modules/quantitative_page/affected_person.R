@@ -27,12 +27,7 @@ ui <- function(id) {
                     p(class = "subtitle", shiny::textOutput(ns("subtitle")) ), #nrow(unique(import_data$data))
                   
                   # Graph goes here
-                  uiOutput(ns("plot_personaf"))
-                #   div(
-                #     style = "display: none;", #visibility: hidden;",
-                #     Dropdown.shinyInput(ns("filtered"), value = import_data$options_filter[[1]]$key, options = import_data$options_filter)
-                #   )
-                )
+                  uiOutput(ns("plot_personaf")))
               )
 
 }
@@ -41,6 +36,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#2F195F"))
+    color <- c("#2F195F", "#2F195F","#2F195F", "#2F195F",
+               "#2F195F",  "#2F195F", "#2F195F","#2F195F","#2F195F","#2F195F","#2F195F",
+               "#2F195F")
     data_personaf <- affected_person_logic$data_personaf(filter)
     
     button_state <- reactiveVal(FALSE)
@@ -64,11 +63,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_barplot(data_personaf,"Betroffene Person")
+      functions$generate_barplot(data_personaf,"Betroffene Person",marker)
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_personaf,"Betroffene Person")
+      functions$generate_piechart(data_personaf,"Betroffene Person",color)
     })
 
     observeEvent(input$toggleButton, {

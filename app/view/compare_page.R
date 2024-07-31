@@ -52,20 +52,22 @@ server <- function(id) {
       
       if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
          converted_time > Sys.time()){
-        div(class = "compare_page",
-            div(class="compare_page1",
-                div(class= "compare_page2",
-                    tagList(
-                      #shinyjs::useShinyjs(),
-                      h3("Vergleichen auswählen"),
-                      paste("Variable auswählen (klicken)"),
-                      tags$br(),
-                      DefaultButton.shinyInput(ns("showmodal"), text = "Wählen",styles = list("background: ##F0FFF0")),
-                      reactOutput(ns("modal"))
-                    )
-                )
-            )
-        )
+        div(style="background-color:#F6F6F6",div(class = "compare_page",
+                                                 div(class="compare_page1",
+                                                     div(class= "compare_page2",
+                                                         tagList(
+                                                           #shinyjs::useShinyjs(),
+                                                           h3("Vergleichen auswählen"),
+                                                           paste("Variable auswählen (klicken)"),
+                                                           tags$br(),
+                                                           DefaultButton.shinyInput(ns("showmodal"), text = "Wählen",styles = list("background: ##F0FFF0")),
+                                                           reactOutput(ns("modal"))
+                                                           #reactOutput(ns("modal")),
+                                                           #reactOutput(ns("page_ok"))
+                                                         )
+                                                     )
+                                                 )
+        ))
         
       } else{
         shiny::h3("Error 500 - Internal Server Error")

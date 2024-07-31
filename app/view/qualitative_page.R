@@ -48,9 +48,10 @@ server <- function(id) {
       
       if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
          converted_time > Sys.time()){
-        tagList(
+        div(style="background-color:#F6F6F6",
+          tagList(
           layouts$qualitative_layout(htmlOutput(ns('myChart')), current_token())
-        )
+        ))
       } else{
         shiny::h3("Error 500 - Internal Server Error")
       }
@@ -64,7 +65,7 @@ server <- function(id) {
       #addResourcePath("lda", "C:/Users/LENOVO/Desktop/Projets/antid_rhino/antid/anti-d-dashboard/Topic_modelling")
       addResourcePath("lda", route)
       url = "lda/index.html"
-      lda <- tags$iframe(src=url, height=650, width=1240)
+      lda <- tags$iframe(src=url, height=890, width=1000)
       lda
     })
 

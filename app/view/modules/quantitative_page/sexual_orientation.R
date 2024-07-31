@@ -35,6 +35,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#2F195F"))
+    color <- c("#2F195F", "#2F195F","#2F195F", "#2F195F",
+               "#2F195F",  "#2F195F", "#2F195F","#2F195F","#2F195F","#2F195F","#2F195F","#2F195F",
+               "#2F195F")
     data_sex <- sexual_orientation_logic$data_sex(filter)
     data_sex1 <- sexual_orientation_logic$data_sex1(filter)
     
@@ -59,11 +63,11 @@ server <- function(id, filter) {
     })
     
     output$barplot <- renderPlotly({
-      functions$generate_barplot(data_sex,"Sexuelle Orientierung")
+      functions$generate_barplot(data_sex,"Sexuelle Orientierung",marker)
     })
     
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_sex,"Sexuelle Orientierung")
+      functions$generate_piechart(data_sex,"Sexuelle Orientierung",color)
     })
     
     observeEvent(input$toggleButton, {

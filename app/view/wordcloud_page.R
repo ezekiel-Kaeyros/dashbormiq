@@ -48,9 +48,10 @@ wordcloud_server <- function(id) {
       
       if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
          converted_time > Sys.time()){
-        tagList(
+        div(style="background-color:#F6F6F6",
+            tagList(
           layouts$wordcloud_layout(shiny::uiOutput(ns('wordcloud')), current_token())
-        )
+        ))
       } else{
         shiny::h3("Error 500 - Internal Server Error")
       }

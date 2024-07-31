@@ -35,6 +35,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#fb6f92"))
+    color <- c("#fb6f92", "#fb6f92","#fb6f92", "#fb6f92",
+               "#fb6f92",  "#fb6f92", "#fb6f92","#fb6f92","#fb6f92","#fb6f92","#fb6f92",
+               "#fb6f92")
     data_onreal <- location_logic$data_onreal(filter)
     data_onreal1 <- location_logic$data_onreal1(filter)
     
@@ -59,11 +63,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({ 
-      functions$generate_barplot(data_onreal,"Standort")
+      functions$generate_barplot(data_onreal,"Standort",marker)
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_onreal,"Standort")
+      functions$generate_piechart(data_onreal,"Standort",color)
     })
 
     observeEvent(input$toggleButton, {

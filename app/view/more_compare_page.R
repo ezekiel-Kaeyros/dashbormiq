@@ -65,28 +65,31 @@ server <- function(id) {
       
       if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
          converted_time > Sys.time()){
-        Stack(
+        div(style="background-color:#F6F6F6",Stack(
           tokens = list(childrenGap = 10),
-          div(class="goback_img", 
+          div(style="display: flex;",class="goback_img",
               div(img(src = "Shape.svg")),#horizontal = TRUE,
-              div(class="goback_link",
+              div(class="goback_link", style="margin-left: 10px;",
                   #style="font-weight: bold; margin-left: 6px",
-                  shiny.fluent::Link(href=paste("#!/compare?token=", current_token(), sep = ""), "Zurückgehen")
+                  shiny.fluent::Link(href=paste("#!/compare?token=", current_token(), sep = ""), "Go back")
               )),
           tags$br(),
-          div(style="display: flex;",
-              cards$makeCard(div(class="text1",""
-                                 #Text("From ",shiny::textOutput(ns("date1")), "to ", shiny::textOutput(ns("date3")))
-              ),
-              div(uiOutput(ns("table1")))
-              ),
-              div(class="margin_l"),
-              div(class="line"),
-              div(class="margin_r"),
-              cards$makeCard(div(class="text1",""
-              ),
-              div( uiOutput(ns("table2")))) #overflow: auto #style="max-height: 400px;"
-          ))
+          tags$br(),
+          div(class="more_compare",
+            #style="display: grid;flex-direction: row;", #align-items: center; justify-content: center;
+              div(class="more_c1",
+                cards$makeCard(
+                div(class="text1",""),
+              div(uiOutput(ns("table1"))) 
+              )),
+              #div(class="margin_l"),
+              #div(class="line"),
+              #div(class="margin_r"),
+              div(class="more_c1",
+                cards$makeCard(
+                div(class="text1",""),
+              div( uiOutput(ns("table2")))) )#overflow: auto #style="max-height: 400px;"
+          )))
         
       } else{
         shiny::h3("Error 500 - Internal Server Error")

@@ -18,25 +18,40 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  cards$card_ui(shiny::textOutput(ns("title1")), #"Age categories of affected persons"
+  # cards$card_ui(shiny::textOutput(ns("title1")), #"Age categories of affected persons"
+  #               ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "PieSingle")),
+  #               div(class = "card_content", shiny::textOutput(ns("title2")), #"Most affected age group :"
+  #                   h3(class = "description",shiny::textOutput(ns("text"))), 
+  #                   p(class = "subtitle", ),
+  #                   # Graph goes here
+  #                   uiOutput(ns("plot_personage"))
+  #               )
+  # )
+  cards$card_ui(shiny::textOutput(ns("title1")),
                 ActionButton.shinyInput(ns("toggleButton"), iconProps = list("iconName" = "PieSingle")),
-                div(class = "card_content", shiny::textOutput(ns("title2")), #"Most affected age group :"
-                    h3(class = "description",shiny::textOutput(ns("text"))), 
-                    p(class = "subtitle", ),
+                div(class = "card_content",
+                    h3(class = "description", shiny::textOutput(ns("title2")),
+                    p(class = "subtitle", shiny::textOutput(ns("text")) ), #nrow(unique(import_data$data))
+                    
                     # Graph goes here
-                    uiOutput(ns("plot_personage"))
-                )
-  )
+                    uiOutput(ns("plot_personage"))                )
+  ))
 
 }
 
 #' @export
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns
+    ns <- session$ns #457b9d
+    marker <- list(color = c("#fb6f92"))
+    color <- c("#fb6f92", "#fb6f92","#fb6f92", "#fb6f92",
+               "#fb6f92",  "#fb6f92", "#fb6f92","#fb6f92","#fb6f92","#fb6f92","#fb6f92",
+               "#fb6f92")
     data_personage <- age_affected_person_logic$data_age(filter)
     data_personage1 <- age_affected_person_logic$data_age1(filter)
     data_emp <- n_employee_logic$data_emp(filter)
+    data_emp1 <- n_employee_logic$data_emp1(filter)
+    
     
     button_state <- reactiveVal(FALSE)
     
@@ -61,11 +76,11 @@ server <- function(id, filter) {
       })
       
       output$barplot1 <- renderPlotly({
-        functions$generate_barplot(data_emp,"Anzahl der Mitarbeiter")
+        functions$generate_barplot(data_emp,"Anzahl der Mitarbeiter",marker)
       })
       
       output$piechart1 <- renderPlotly({
-        functions$generate_piechart(data_emp,"Anzahl der Mitarbeiter")
+        functions$generate_piechart(data_emp,"Anzahl der Mitarbeiter",color)
       })
     } else {
       output$plot_personage <- renderUI({
@@ -77,11 +92,11 @@ server <- function(id, filter) {
       })
       
       output$barplot <- renderPlotly({
-        functions$generate_barplot(data_personage,"Alter")
+        functions$generate_barplot(data_personage,"Alter",marker)
       })
       
       output$piechart <- renderPlotly({
-        functions$generate_piechart(data_personage,"Alter")
+        functions$generate_piechart(data_personage,"Alter",color)
       })
     }
     
@@ -97,7 +112,7 @@ server <- function(id, filter) {
     
     if (filter=="Eine Organisation/Institution") {
       output$title2 <- shiny::renderText({
-        paste(" ")
+        paste("Am häufigsten betroffene Unternehmensgröße: ")
       })
     } else {
       output$title2 <- shiny::renderText({
@@ -112,7 +127,7 @@ server <- function(id, filter) {
     if (filter=="Eine Organisation/Institution") {
       output$text <- shiny::renderText({
         #nrow(data_emp)
-        paste("")
+        names(table(data_emp1$numberOfEmployees))[which.max(table(data_emp1$numberOfEmployees))]
       })
     } else {
       output$text <- shiny::renderText({

@@ -32,3 +32,28 @@
   color: #007bff;
   
 }
+
+.more_compare {
+  display: grid;
+  gap: 2rem;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1025px) {
+      .more_compare {
+        display: flex;
+        flex-direction: column;
+     
+      }
+    }
+
+.more_c1 {
+  width:100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}

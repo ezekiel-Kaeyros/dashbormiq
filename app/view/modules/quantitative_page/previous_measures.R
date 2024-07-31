@@ -33,6 +33,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#fb6f92"))
+    color <- c("#fb6f92", "#fb6f92","#fb6f92", "#fb6f92",
+               "#fb6f92",  "#fb6f92", "#fb6f92","#fb6f92","#fb6f92","#fb6f92","#fb6f92",
+               "#fb6f92")
     previous_measures_f <- previous_measures_logic$previous_measures(filter)
     button_state <- reactiveVal(FALSE)
 
@@ -55,11 +59,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_barplot(previous_measures_f,"Aktion")
+      functions$generate_barplot(previous_measures_f,"Aktion",marker)
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(previous_measures_f,"Aktion")
+      functions$generate_piechart(previous_measures_f,"Aktion",color)
     })
 
     observeEvent(input$toggleButton, {

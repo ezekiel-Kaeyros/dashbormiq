@@ -36,6 +36,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#2F195F"))
+    color <- c("#2F195F", "#2F195F","#2F195F", "#2F195F",
+               "#2F195F",  "#2F195F", "#2F195F","#2F195F","#2F195F","#2F195F","#2F195F",
+               "#2F195F")
     data_gender <- gender_logic$data_gender(filter)
     data_type <- organization_type_logic$data_type(filter)
     
@@ -62,11 +66,11 @@ server <- function(id, filter) {
       })
       
       output$barplot1 <- renderPlotly({
-        functions$generate_barplot(data_type,"Typ")
+        functions$generate_barplot(data_type,"Typ", marker)
       })
       
       output$piechart1 <- renderPlotly({
-        functions$generate_piechart(data_type,"Typ")
+        functions$generate_piechart(data_type,"Typ",color)
       })
     } else {
       output$plot_persongen <- renderUI({
@@ -78,11 +82,11 @@ server <- function(id, filter) {
       })
       
       output$barplot <- renderPlotly({
-        functions$generate_barplot(data_gender,"Geschlecht")
+        functions$generate_barplot(data_gender,"Geschlecht",marker)
       })
       
       output$piechart <- renderPlotly({
-        functions$generate_piechart(data_gender,"Geschlecht")
+        functions$generate_piechart(data_gender,"Geschlecht",color)
       })
     }
     

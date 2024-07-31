@@ -35,6 +35,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#2F195F"))
+    color <- c("#2F195F", "#2F195F","#2F195F", "#2F195F",
+               "#2F195F",  "#2F195F", "#2F195F","#2F195F","#2F195F","#2F195F","#2F195F",
+               "#2F195F")
     influence_discrimination <- influence_discrimination_logic$influence_discrimination(filter)
     #ns <- NS(id)
     #output$plot_personaf <- render
@@ -59,11 +63,11 @@ server <- function(id, filter) {
     })
     
     output$barplot <- renderPlotly({
-      functions$generate_barplot(influence_discrimination,"Grundlage der Diskriminierung")
+      functions$generate_barplot(influence_discrimination,"Grundlage der Diskriminierung",marker)
     })
     
     output$piechart <- renderPlotly({
-      functions$generate_piechart(influence_discrimination,"Grundlage der Diskriminierung")
+      functions$generate_piechart(influence_discrimination,"Grundlage der Diskriminierung",color)
     })
     
     observeEvent(input$toggleButton, {

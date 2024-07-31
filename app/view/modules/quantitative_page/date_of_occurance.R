@@ -35,6 +35,10 @@ ui <- function(id) {
 server <- function(id, filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    marker <- list(color = c("#2F195F"))
+    color <- c("#2F195F", "#2F195F","#2F195F", "#2F195F",
+               "#2F195F",  "#2F195F", "#2F195F","#2F195F","#2F195F","#2F195F","#2F195F",
+               "#2F195F")
     data_months <- date_occurance_logic$data_temp(filter)
     data_months1 <- date_occurance_logic$data_temp1(filter)
     #output$plot_personaf <- render
@@ -59,11 +63,11 @@ server <- function(id, filter) {
     })
 
     output$barplot <- renderPlotly({
-      functions$generate_barplot(data_months,"Zeit")
+      functions$generate_barplot(data_months,"Zeit",marker)
     })
 
     output$piechart <- renderPlotly({
-      functions$generate_piechart(data_months,"Zeit")
+      functions$generate_piechart(data_months,"Zeit",color)
     })
 
     observeEvent(input$toggleButton, {
