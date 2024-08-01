@@ -14,7 +14,8 @@ box::use(
 box::use(
   app/view/components/layouts,
   app/logic/import_data,
-  app/logic/wordcloud_logic
+  app/logic/wordcloud_logic,
+  app/logic/functions
 )
 
 #' @export
@@ -27,6 +28,7 @@ wordcloud_ui <- function(id) {
 #' @export
 wordcloud_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    
     ns <- session$ns
     
     current_token <- shiny::reactive({
@@ -34,7 +36,7 @@ wordcloud_server <- function(id) {
       if(is.null(token)){
         token <- "404"
       }else{
-        token <- token 
+        token <- token
       }
       token
     })
@@ -46,19 +48,68 @@ wordcloud_server <- function(id) {
       ############ Detect validity time of token
       converted_time <- as.POSIXct(token_json_data$exp, origin="1970-01-01", tz="Africa/Lagos")
       
-      if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
+      if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role &
          converted_time > Sys.time()){
-        div(style="background-color:#F6F6F6",
+        div(style = "background-color: #f6f6f6; height: 55em;",
             tagList(
-          layouts$wordcloud_layout(shiny::uiOutput(ns('wordcloud')), current_token())
-        ))
+              div(style = "justify-content: flex-end; align-items: center; gap: 0.5rem; margin-right: 35px; display: flex; ",
+                  shiny.fluent::DefaultButton.shinyInput("refresh", "Daten aktualisieren",
+                                                         iconProps = list(iconName = "Refresh"),
+                                                         style = "height: 62px; margin: 5px; background-color: #000; color: #fff; border-radius: 12px; display: flex; align-items: center;"),
+                  shiny.fluent::Link(href=paste("#!/qualitative?token=", current_token(), sep = ""), "Siehe Qualitativ",
+                                     style = "background-color: #000; text-decoration:none; padding: 1.5em 1.5em; text-align: center; border-color: #000; border-radius: 12px; border: 1px solid black; color: #fff; font-weight: bold; display: flex; align-items: center;"),
+                  shiny.fluent::DefaultButton.shinyInput("export_quantitative", "Daten exportieren", style = "margin-top: 10px;",
+                                                         iconProps = list(iconName = "Download"))),
+              layouts$wordcloud_layout(shiny::uiOutput(ns('wordcloud')))#, current_token())
+            )
+            
+        )
+        
       } else{
         shiny::h3("Error 500 - Internal Server Error")
       }
     })
     
     output$wordcloud <- shiny::renderUI({
-        wordcloud_logic$generate_wordcloud(import_data$data$description)
+      functions$generate_wordcloud(import_data$data$description)
     })
   })
 }
+
+# wordcloud_server <- function(id) {
+#   moduleServer(id, function(input, output, session) {
+#     ns <- session$ns
+#     
+#     current_token <- shiny::reactive({
+#       token <- shiny.router::get_query_param("token", session)
+#       if(is.null(token)){
+#         token <- "404"
+#       }else{
+#         token <- token 
+#       }
+#       token
+#     })
+#     
+#     output$ui <- shiny::renderUI({
+#       ############# Decode JWT
+#       token_json_data <- jose::jwt_decode_hmac(current_token(), secret = import_data$key)
+#       
+#       ############ Detect validity time of token
+#       converted_time <- as.POSIXct(token_json_data$exp, origin="1970-01-01", tz="Africa/Lagos")
+#       
+#       if(token_json_data$email %in% import_data$login_data$email & token_json_data$role == import_data$role & 
+#          converted_time > Sys.time()){
+#         div(style="background-color:#F6F6F6",
+#             tagList(
+#           layouts$wordcloud_layout(shiny::uiOutput(ns('wordcloud')), current_token())
+#         ))
+#       } else{
+#         shiny::h3("Error 500 - Internal Server Error")
+#       }
+#     })
+#     
+#     output$wordcloud <- shiny::renderUI({
+#         wordcloud_logic$generate_wordcloud(import_data$data$description)
+#     })
+#   })
+# }

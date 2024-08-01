@@ -65,7 +65,7 @@ server <- function(id) {
       #addResourcePath("lda", "C:/Users/LENOVO/Desktop/Projets/antid_rhino/antid/anti-d-dashboard/Topic_modelling")
       addResourcePath("lda", route)
       url = "lda/index.html"
-      lda <- tags$iframe(src=url, height=890, width=1000)
+      lda <- tags$iframe(src=url, height=890, width="100%")
       lda
     })
 
